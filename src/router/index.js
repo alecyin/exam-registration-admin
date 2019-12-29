@@ -25,9 +25,24 @@ export default new Router({
                     meta: { title: '自定义图标' }
                 },
                 {
+                    path: '/announcement',
+                    component: () => import(/* webpackChunkName: "announcement" */ '../components/page/Announcement.vue'),
+                    meta: { title: '公告管理' }
+                },
+                {
                     path: '/student',
                     component: () => import(/* webpackChunkName: "student" */ '../components/page/Student.vue'),
                     meta: { title: '学生管理' }
+                },
+                {
+                    path: '/site',
+                    component: () => import(/* webpackChunkName: "site" */ '../components/page/Site.vue'),
+                    meta: { title: '考点管理' }
+                },
+                {
+                    path: '/major',
+                    component: () => import(/* webpackChunkName: "major" */ '../components/page/Major.vue'),
+                    meta: { title: '专业管理' }
                 },
                 {
                     path: '/table',

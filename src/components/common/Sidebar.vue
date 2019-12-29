@@ -68,8 +68,23 @@ export default {
                 },
                 {
                     icon: 'el-icon-lx-cascades',
+                    index: 'announcement',
+                    title: '公告管理'
+                },
+                {
+                    icon: 'el-icon-lx-cascades',
                     index: 'student',
                     title: '学生管理'
+                },
+                {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'site',
+                    title: '考点管理'
+                },
+                {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'major',
+                    title: '专业管理'
                 },
                 {
                     icon: 'el-icon-lx-copy',

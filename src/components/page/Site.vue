@@ -3,7 +3,7 @@
         <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 学生管理
+                    <i class="el-icon-lx-cascades"></i> 考点管理
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div> -->
@@ -15,8 +15,9 @@
                     class="handle-del mr10"
                     @click="delAllSelection"
                 >批量删除</el-button>
-                <el-input v-model="query.keyword" placeholder="ID/姓名/身份证号码" class="handle-input mr10"></el-input>
+                <el-input v-model="query.keyword" placeholder="ID/考点名称/代码" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
+                <el-button type="primary" icon="el-icon-plus" @click="handleAdd">添加</el-button>
             </div>
             <el-table
                 :data="tableData"
@@ -27,16 +28,12 @@
                 @selection-change="handleSelectionChange"
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-                <el-table-column prop="name" label="姓名"></el-table-column>
-                <el-table-column prop="idCardNumber" label="身份证号码"></el-table-column>
-                <el-table-column prop="sex" label="性别"></el-table-column>
-                <el-table-column prop="phone" label="手机号码"></el-table-column>
+                <el-table-column prop="id" label="ID" width="55" align="center" column-key="createTime"></el-table-column>
+                <el-table-column prop="name" label="考点名称"></el-table-column>
+                <el-table-column prop="code" label="考点代码"></el-table-column>
                 <el-table-column prop="address" label="地址"></el-table-column>
-                <el-table-column prop="school" label="学校"></el-table-column>
-                <el-table-column prop="email" label="邮箱"></el-table-column>
-                <el-table-column prop="loginTime" label="最后登录时间" :formatter="dateFormat"></el-table-column>
-                <el-table-column prop="createTime" label="注册时间" :formatter="dateFormat"></el-table-column>
+                <el-table-column prop="updateTime" label="最后修改时间" :formatter="dateFormat"></el-table-column>
+                <el-table-column prop="createTime" label="创建时间" :formatter="dateFormat"></el-table-column>
                 <el-table-column label="启用状态" align="center">
                     <template slot-scope="scope">
                         <el-tag
@@ -73,19 +70,16 @@
         </div>
 
         <!-- 编辑弹出框 -->
-        <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
+        <!-- <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
             <el-form ref="form" :model="form" label-width="90px">
-                <el-form-item label="姓名">
+                <el-form-item label="考点名称">
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="身份证号码">
-                    <el-input v-model="form.idCardNumber"></el-input>
+                <el-form-item label="考点代码">
+                    <el-input v-model="form.code"></el-input>
                 </el-form-item>
                 <el-form-item label="地址">
                     <el-input v-model="form.address"></el-input>
-                </el-form-item>
-                <el-form-item label="学校">
-                    <el-input v-model="form.school"></el-input>
                 </el-form-item>
                 <el-form-item label="是否关闭">
                     <template>
@@ -100,14 +94,41 @@
                 <el-button @click="editVisible = false">取 消</el-button>
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
             </span>
+        </el-dialog> -->
+
+        <!-- 添加弹出框 -->
+        <el-dialog :title="dialog.editMode ? '编辑' : '新增'" :visible.sync="editVisible" width="30%">
+            <el-form ref="form" :model="form" label-width="90px">
+                <el-form-item label="考点名称">
+                    <el-input v-model="form.name"></el-input>
+                </el-form-item>
+                <el-form-item label="考点代码">
+                    <el-input v-model="form.code"></el-input>
+                </el-form-item>
+                <el-form-item label="地址">
+                    <el-input v-model="form.address"></el-input>
+                </el-form-item>
+                <el-form-item label="是否关闭">
+                    <template>
+                        <el-radio-group v-model="form.isDeleted">
+                            <el-radio :label=true>是</el-radio>
+                            <el-radio :label=false>否</el-radio>
+                        </el-radio-group>
+                    </template>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveInfo">确 定</el-button>
+            </span>
         </el-dialog>
     </div>
 </template>
 
 <script>
-import { fetchData,editData,delData,delAllData } from '../../api/base';
+import { fetchData,editData,delData,delAllData,addData } from '../../api/base';
 import moment from 'moment';
-const mode = 'students';
+const mode = 'sites';
 export default {
     name: 'sitetable',
     data() {
@@ -119,6 +140,9 @@ export default {
             },
             tableData: [],
             multipleSelection: [],
+            dialog: {
+                editMode: false
+            },
             delList: [],
             editVisible: false,
             pageTotal: 0,
@@ -142,6 +166,12 @@ export default {
         handleSearch() {
             this.$set(this.query, 'pageIndex', 1);
             this.getData();
+        },
+        // 触发添加按钮
+        handleAdd() {
+            this.form = { isDeleted:false };
+            this.editVisible = true;
+            this.dialog.editMode = false;
         },
         // 删除操作
         handleDelete(index, row) {
@@ -183,8 +213,12 @@ export default {
             });
             this.multipleSelection = [];
         },
+        saveInfo() {
+          this.dialog.editMode ? this.saveEdit() : this.saveAdd();  
+        },
         // 编辑操作
         handleEdit(index, row) {
+            this.dialog.editMode = true;
             this.idx = index;
             this.form = row;
             this.editVisible = true;
@@ -194,8 +228,19 @@ export default {
             this.editVisible = false;
             let form = this.form;
             editData({mode, form}).then(() => {
-                this.$message.success(`修改 ID 为 ${this.form.id} 的学生信息成功`);
+                this.$message.success(`修改 ID 为 ${this.form.id} 的考点信息成功`);
                 this.$set(this.tableData, this.idx, this.form);
+            }).catch(() => {
+               this.$message.error(`保存失败`);
+            });
+        },
+        // 保存添加的信息
+        saveAdd() {
+            this.editVisible = false;
+            let form = this.form;
+            addData({mode, form}).then(() => {
+                this.$message.success(`添加考点信息成功`);
+                this.getData();
             }).catch(() => {
                this.$message.error(`保存失败`);
             });
