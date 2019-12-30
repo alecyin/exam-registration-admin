@@ -50,6 +50,11 @@ export default new Router({
                     meta: { title: '专业管理' }
                 },
                 {
+                    path: '/subject',
+                    component: () => import(/* webpackChunkName: "subject" */ '../components/page/Subject.vue'),
+                    meta: { title: '科目管理' }
+                },
+                {
                     path: '/table',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/BaseTable.vue'),
                     meta: { title: '基础表格' }
