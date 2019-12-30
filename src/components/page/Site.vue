@@ -118,7 +118,7 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="editVisible = false">取 消</el-button>
+                <el-button @click="editVisible = false;">取 消</el-button>
                 <el-button type="primary" @click="saveInfo">确 定</el-button>
             </span>
         </el-dialog>
@@ -220,7 +220,7 @@ export default {
         handleEdit(index, row) {
             this.dialog.editMode = true;
             this.idx = index;
-            this.form = row;
+            this.form = Object.assign({}, row);
             this.editVisible = true;
         },
         // 保存编辑

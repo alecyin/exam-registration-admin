@@ -186,7 +186,7 @@ export default {
         // 编辑操作
         handleEdit(index, row) {
             this.idx = index;
-            this.form = row;
+            this.form = Object.assign({}, row);
             this.editVisible = true;
         },
         // 保存编辑

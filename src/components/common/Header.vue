@@ -15,7 +15,7 @@
                     </el-tooltip>
                 </div>
                 <!-- 消息中心 -->
-                <div class="btn-bell">
+                <!-- <div class="btn-bell">
                     <el-tooltip
                         effect="dark"
                         :content="message?`有${message}条未读消息`:`消息中心`"
@@ -26,11 +26,11 @@
                         </router-link>
                     </el-tooltip>
                     <span class="btn-bell-badge" v-if="message"></span>
-                </div>
+                </div> -->
                 <!-- 用户头像 -->
-                <div class="user-avator">
+                <!-- <div class="user-avator">
                     <img src="../../assets/img/img.jpg" />
-                </div>
+                </div> -->
                 <!-- 用户名下拉菜单 -->
                 <el-dropdown class="user-name" trigger="click" @command="handleCommand">
                     <span class="el-dropdown-link">
@@ -38,9 +38,10 @@
                         <i class="el-icon-caret-bottom"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <a href="https://github.com/lin-xin/vue-manage-system" target="_blank">
+                        <!-- <a href="https://github.com/lin-xin/vue-manage-system" target="_blank">
                             <el-dropdown-item>项目仓库</el-dropdown-item>
-                        </a>
+                        </a> -->
+                        <el-dropdown-item divided command="loginout">修改密码</el-dropdown-item>
                         <el-dropdown-item divided command="loginout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
@@ -118,20 +119,20 @@ export default {
     position: relative;
     box-sizing: border-box;
     width: 100%;
-    height: 70px;
-    font-size: 22px;
+    height: 50px;
+    font-size: 20px;
     color: #fff;
 }
 .collapse-btn {
     float: left;
     padding: 0 21px;
     cursor: pointer;
-    line-height: 70px;
+    line-height: 50px;
 }
 .header .logo {
     float: left;
     width: 250px;
-    line-height: 70px;
+    line-height: 50px;
 }
 .header-right {
     float: right;
@@ -139,7 +140,7 @@ export default {
 }
 .header-user-con {
     display: flex;
-    height: 70px;
+    height: 50px;
     align-items: center;
 }
 .btn-fullscreen {

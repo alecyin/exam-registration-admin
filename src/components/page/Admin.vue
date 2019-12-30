@@ -3,7 +3,7 @@
         <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 公告管理
+                    <i class="el-icon-lx-cascades"></i> 管理员管理
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div> -->
@@ -15,7 +15,7 @@
                     class="handle-del mr10"
                     @click="delAllSelection"
                 >批量删除</el-button>
-                <el-input v-model="query.keyword" placeholder="ID/公告名称" class="handle-input mr10"></el-input>
+                <el-input v-model="query.keyword" placeholder="ID/管理员名称/代码" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
                 <el-button type="primary" icon="el-icon-plus" @click="handleAdd">添加</el-button>
             </div>
@@ -28,17 +28,10 @@
                 @selection-change="handleSelectionChange"
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column type="expand">
-                    <template slot-scope="props">
-                        <el-form label-position="left" inline>
-                                <span v-html="props.row.content"></span>
-                        </el-form>
-                    </template>
-                </el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center" column-key="createTime"></el-table-column>
-                <el-table-column prop="title" label="标题"></el-table-column>
+                <el-table-column prop="name" label="管理员名称"></el-table-column>
                 <el-table-column prop="updateTime" label="最后修改时间" :formatter="dateFormat"></el-table-column>
-                <el-table-column prop="createTime" label="发布时间" :formatter="dateFormat"></el-table-column>
+                <el-table-column prop="createTime" label="创建时间" :formatter="dateFormat"></el-table-column>
                 <el-table-column label="启用状态" align="center">
                     <template slot-scope="scope">
                         <el-tag
@@ -77,10 +70,10 @@
         <!-- 编辑弹出框 -->
         <!-- <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
             <el-form ref="form" :model="form" label-width="90px">
-                <el-form-item label="公告名称">
+                <el-form-item label="管理员名称">
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="公告代码">
+                <el-form-item label="管理员代码">
                     <el-input v-model="form.code"></el-input>
                 </el-form-item>
                 <el-form-item label="地址">
@@ -104,11 +97,11 @@
         <!-- 添加弹出框 -->
         <el-dialog :title="dialog.editMode ? '编辑' : '新增'" :visible.sync="editVisible" width="30%">
             <el-form ref="form" :model="form" label-width="90px">
-                <el-form-item label="标题">
-                    <el-input v-model="form.title"></el-input>
+                <el-form-item label="管理员名称">
+                    <el-input v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="内容">
-                    <el-input v-model="form.content"></el-input>
+                <el-form-item label="密码">
+                    <el-input v-model="form.password"></el-input>
                 </el-form-item>
                 <el-form-item label="是否关闭">
                     <template>
@@ -120,7 +113,7 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="editVisible = false">取 消</el-button>
+                <el-button @click="editVisible = false;">取 消</el-button>
                 <el-button type="primary" @click="saveInfo">确 定</el-button>
             </span>
         </el-dialog>
@@ -130,9 +123,9 @@
 <script>
 import { fetchData,editData,delData,delAllData,addData } from '../../api/base';
 import moment from 'moment';
-const mode = 'announcements';
+const mode = 'admins';
 export default {
-    name: 'announcementtable',
+    name: 'sitetable',
     data() {
         return {
             query: {
@@ -230,7 +223,7 @@ export default {
             this.editVisible = false;
             let form = this.form;
             editData({mode, form}).then(() => {
-                this.$message.success(`修改 ID 为 ${this.form.id} 的公告信息成功`);
+                this.$message.success(`修改 ID 为 ${this.form.id} 的管理员信息成功`);
                 this.$set(this.tableData, this.idx, this.form);
             }).catch(() => {
                this.$message.error(`保存失败`);
@@ -241,7 +234,7 @@ export default {
             this.editVisible = false;
             let form = this.form;
             addData({mode, form}).then(() => {
-                this.$message.success(`添加公告信息成功`);
+                this.$message.success(`添加管理员信息成功`);
                 this.getData();
             }).catch(() => {
                this.$message.error(`保存失败`);

@@ -35,6 +35,11 @@ export default new Router({
                     meta: { title: '学生管理' }
                 },
                 {
+                    path: '/admin',
+                    component: () => import(/* webpackChunkName: "admin" */ '../components/page/Admin.vue'),
+                    meta: { title: '管理员管理' }
+                },
+                {
                     path: '/site',
                     component: () => import(/* webpackChunkName: "site" */ '../components/page/Site.vue'),
                     meta: { title: '考点管理' }
