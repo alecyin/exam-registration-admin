@@ -55,6 +55,11 @@ export default new Router({
                     meta: { title: '科目管理' }
                 },
                 {
+                    path: '/examinee-note',
+                    component: () => import(/* webpackChunkName: "examinee-notes" */ '../components/page/ExamineeNote.vue'),
+                    meta: { title: '准考证注意事项' }
+                },
+                {
                     path: '/table',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/BaseTable.vue'),
                     meta: { title: '基础表格' }

@@ -97,6 +97,11 @@ export default {
                     title: '科目管理'
                 },
                 {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'examinee-note',
+                    title: '准考证注意事项'
+                },
+                {
                     icon: 'el-icon-lx-copy',
                     index: 'tabs',
                     title: 'tab选项卡'

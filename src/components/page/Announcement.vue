@@ -102,14 +102,15 @@
         </el-dialog> -->
 
         <!-- 添加弹出框 -->
-        <el-dialog :title="dialog.editMode ? '编辑' : '新增'" :visible.sync="editVisible" width="30%">
+        <el-dialog :title="dialog.editMode ? '编辑' : '新增'" :visible.sync="editVisible" width="60%">
             <el-form ref="form" :model="form" label-width="90px">
                 <el-form-item label="标题">
                     <el-input v-model="form.title"></el-input>
                 </el-form-item>
                 <el-form-item label="内容">
-                    <el-input v-model="form.content"></el-input>
+                    <quill-editor ref="myTextEditor" v-model="form.content" :options="editorOption"></quill-editor>
                 </el-form-item>
+                
                 <el-form-item label="是否关闭">
                     <template>
                         <el-radio-group v-model="form.isDeleted">
@@ -130,11 +131,20 @@
 <script>
 import { fetchData,editData,delData,delAllData,addData } from '../../api/base';
 import moment from 'moment';
+import 'quill/dist/quill.core.css';
+import 'quill/dist/quill.snow.css';
+import 'quill/dist/quill.bubble.css';
+import { quillEditor } from 'vue-quill-editor';
 const mode = 'announcements';
 export default {
     name: 'announcementtable',
     data() {
         return {
+            content: '',
+            editorOption: {
+                placeholder: 'Hello World',
+                theme: 'snow'
+            },
             query: {
                 keyword: '',
                 pageIndex: 1,
@@ -152,6 +162,9 @@ export default {
             idx: -1,
             id: -1
         };
+    },
+    components: {
+        quillEditor
     },
     created() {
         this.getData();
@@ -258,7 +271,14 @@ export default {
                 return "";
             }
            return moment(date).format("YYYY-MM-DD HH:mm:ss");
-       }
+        },
+        onEditorChange({ editor, html, text }) {
+                this.content = html;
+        },
+        submit(){
+            console.log(this.content);
+            this.$message.success('提交成功！');
+        }
     }
 };
 </script>
@@ -291,5 +311,8 @@ export default {
     margin: auto;
     width: 40px;
     height: 40px;
+}
+.ql-editor{
+	height:400px;
 }
 </style>
