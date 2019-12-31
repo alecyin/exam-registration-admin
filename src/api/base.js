@@ -56,3 +56,24 @@ export const delAllData = ({ mode, str }) => {
     });
 };
 
+export const fetchAllEnabledData = mode => {
+    return request({
+        url: mode + '/enabled',
+        method: 'get'
+    });
+};
+
+export const fetchEnabledDataByCondition = ({qMode, condition}) => {
+    return request({
+        url: qMode + '/enabled-condition',
+        method: 'get',
+        params: condition
+    });
+};
+
+export const getCascader = qMode => {
+    return request({
+        url: qMode + '/cascader',
+        method: 'get'
+    });
+};

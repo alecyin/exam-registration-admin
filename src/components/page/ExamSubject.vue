@@ -3,7 +3,7 @@
         <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 科目管理
+                    <i class="el-icon-lx-cascades"></i> 科目考试管理
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div> -->
@@ -15,7 +15,14 @@
                     class="handle-del mr10"
                     @click="delAllSelection"
                 >批量删除</el-button>
-                <el-input v-model="query.keyword" placeholder="ID/科目名称/代码" class="handle-input mr10"></el-input>
+                <el-select v-model="query.examName" placeholder="专业考试名称" @change="selectQueryExamChange" class="mr10">
+                    <el-option key="" label="全部" value=""></el-option>
+                    <el-option v-for="item in examList" 
+                                :key="item.id" 
+                                :lable="item.id" 
+                                :value="item.name">
+                    </el-option>
+                </el-select>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
                 <el-button type="primary" icon="el-icon-plus" @click="handleAdd">添加</el-button>
             </div>
@@ -29,16 +36,18 @@
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center" column-key="createTime"></el-table-column>
-                <el-table-column prop="name" label="科目名称"></el-table-column>
-                <el-table-column prop="code" label="科目代码"></el-table-column>
-                <el-table-column prop="type" label="考试形式"></el-table-column>
-                 <el-table-column prop="majorName" label="所属专业"></el-table-column>
+                <el-table-column prop="examName" label="所属专业考试"></el-table-column>
+                <el-table-column prop="majorName" label="专业名称"></el-table-column>
+                <el-table-column prop="subjectName" label="科目名称"></el-table-column>
+                <el-table-column prop="address" label="具体地址"></el-table-column>
+                <el-table-column prop="startTime" label="开始时间" :formatter="dateFormat"></el-table-column>
+                <el-table-column prop="endTime" label="结束时间" :formatter="dateFormat"></el-table-column>
                 <el-table-column prop="updateTime" label="最后修改时间" :formatter="dateFormat"></el-table-column>
-                <el-table-column prop="createTime" label="创建时间" :formatter="dateFormat"></el-table-column>
+                <el-table-column prop="createTime" label="注册时间" :formatter="dateFormat"></el-table-column>
                 <el-table-column label="启用状态" align="center">
                     <template slot-scope="scope">
                         <el-tag
-                            :type="scope.row.isDeleted===false?'success':(scope.row.isDeleted===true?'danger':'')"
+                            :type="scope.row.isDeleted===false?'success':(scope.row.state===true?'danger':'')"
                         >{{scope.row.isDeleted===false?'正常':'关闭'}}</el-tag>
                     </template>
                 </el-table-column>
@@ -71,30 +80,22 @@
         </div>
 
         <!-- 添加弹出框 -->
-        <el-dialog :title="dialog.editMode ? '编辑' : '新增'" :visible.sync="editVisible" width="30%">
-            <el-form ref="form" :model="form" label-width="90px">
-                <el-form-item label="科目名称">
-                    <el-input v-model="form.name"></el-input>
+        <el-dialog :title="dialog.editMode ? '编辑' : '新增'" :visible.sync="editVisible" width="35%">
+            <el-form ref="form" :model="form" label-width="110px">
+                <el-form-item label="选择考试及科目">
+                    <el-cascader :options="examSubjects" v-model="form.examSubject" clearable></el-cascader>
                 </el-form-item>
-                <el-form-item label="科目代码">
-                    <el-input v-model="form.code"></el-input>
+                <el-form-item label="具体地址">
+                    <el-input v-model="form.address"></el-input>
                 </el-form-item>
-                <el-form-item label="考试形式">
-                    <template>
-                        <el-radio-group v-model="form.type">
-                            <el-radio label="面试">面试</el-radio>
-                            <el-radio label="笔试">笔试</el-radio>
-                        </el-radio-group>
-                    </template>
-                </el-form-item>
-                <el-form-item label="所属专业">
-                    <el-select v-model="form.majorName" placeholder="请选择所属专业" @change="selectChange">
-                        <el-option v-for="item in majorList" 
-                                    :key="item.id" 
-                                    :lable="item.id" 
-                                    :value="item.name">
-                        </el-option>
-                    </el-select>
+                <el-form-item label="考试时间设置">
+                    <el-date-picker
+                    v-model="form.examTime"
+                    type="datetimerange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期">
+                    </el-date-picker>
                 </el-form-item>
                 <el-form-item label="是否关闭">
                     <template>
@@ -114,24 +115,25 @@
 </template>
 
 <script>
-import { fetchData,editData,delData,delAllData,addData,fetchAllEnabledData } from '../../api/base';
+import { fetchData,editData,delData,delAllData,addData,fetchAllEnabledData,fetchEnabledDataByCondition,getCascader } from '../../api/base';
 import moment from 'moment';
-const mode = 'subjects';
+const mode = 'exam-subjects';
 export default {
-    name: 'subjecttable',
+    name: 'examsubjectstable',
     data() {
         return {
             query: {
-                keyword: '',
+                examId: '',
                 pageIndex: 1,
                 pageSize: 10
             },
-            majorList: [],
+            examList: [],
             tableData: [],
             multipleSelection: [],
             dialog: {
                 editMode: false
             },
+            examSubjects: [],
             delList: [],
             editVisible: false,
             pageTotal: 0,
@@ -142,8 +144,15 @@ export default {
     },
     created() {
         this.getData();
+        this.selectGetData();
     },
     methods: {
+        cascaderGetData() {
+            let qMode = "exams";
+            getCascader(qMode).then(res => {
+                this.examSubjects = res.data;
+            });
+        },
         getData() {
             let query = this.query;
             fetchData({mode, query}).then(res => {
@@ -158,12 +167,9 @@ export default {
         },
         // 触发添加按钮
         handleAdd() {
-            this.form = { 
-                isDeleted: false,
-                type: "面试"
-            };
-            this.selectGetData();
+            this.form = { isDeleted:false };
             this.editVisible = true;
+            this.cascaderGetData();
             this.dialog.editMode = false;
         },
         // 删除操作
@@ -209,35 +215,42 @@ export default {
         saveInfo() {
           this.dialog.editMode ? this.saveEdit() : this.saveAdd();  
         },
-        selectGetData() {
-            fetchAllEnabledData("majors").then(res => {
-                this.majorList = JSON.parse(JSON.stringify(res.data).slice(1, -1));
-            }).catch(error => {
-               this.$message.error(`获取专业信息失败，稍后再试`);
-            });
-        },
         // 编辑操作
         handleEdit(index, row) {
             this.dialog.editMode = true;
             this.idx = index;
             this.form = Object.assign({}, row);
-            this.selectGetData();
+            this.form.examTime = [this.form.startTime, this.form.endTime];
+            this.cascaderGetData();
+            this.form.examSubject = [this.form.examId, this.form.subjectId];
             this.editVisible = true;
         },
-        selectChange(e) {
+        selectGetData() {
+            fetchAllEnabledData("exams").then(res => {
+                this.examList = JSON.parse(JSON.stringify(res.data).slice(1, -1));
+            }).catch(error => {
+               this.$message.error(`获取考点信息失败，稍后再试`);
+            });
+        },
+        selectQueryExamChange(e) {
+            this.query.examId = '';
             let obj = {};
-            obj = this.majorList.find((item)=>{//这里的userList就是上面遍历的数据源
+            obj = this.examList.find((item)=>{//这里的userList就是上面遍历的数据源
                 return item.name === e;//筛选出匹配数据
             });
-            this.form.majorId = obj.id;
+            this.query.examId = obj.id;
         },
         // 保存编辑
         saveEdit() {
             this.editVisible = false;
             let form = this.form;
+            form.startTime = form.examTime[0];
+            form.endTime = form.examTime[1];
+            form.examId = form.examSubject[0];
+            form.subjectId = form.examSubject[1];
             editData({mode, form}).then(() => {
-                this.$message.success(`修改 ID 为 ${this.form.id} 的科目信息成功`);
-                this.$set(this.tableData, this.idx, this.form);
+                this.$message.success(`修改 ID 为 ${this.form.id} 的科目考试信息成功`);
+                this.getData();
             }).catch(() => {
                this.$message.error(`保存失败`);
             });
@@ -246,8 +259,12 @@ export default {
         saveAdd() {
             this.editVisible = false;
             let form = this.form;
+            form.startTime = form.examTime[0];
+            form.endTime = form.examTime[1];
+            form.examId = form.examSubject[0];
+            form.subjectId = form.examSubject[1];
             addData({mode, form}).then(() => {
-                this.$message.success(`添加科目信息成功`);
+                this.$message.success(`添加科目考试信息成功`);
                 this.getData();
             }).catch(() => {
                this.$message.error(`保存失败`);

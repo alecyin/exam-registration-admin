@@ -102,6 +102,16 @@ export default {
                     title: '准考证注意事项'
                 },
                 {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'exam',
+                    title: '专业考试管理'
+                },
+                {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'exam-subject',
+                    title: '科目考试管理'
+                },
+                {
                     icon: 'el-icon-lx-copy',
                     index: 'tabs',
                     title: 'tab选项卡'

@@ -10,7 +10,7 @@
             <div class="plugins-tips">
                 在下方输入保存即可
             </div>
-            <quill-editor ref="myTextEditor" v-model="content" :options="editorOption"></quill-editor>
+            <quill-editor ref="myTextEditor" v-model="form.content" :options="editorOption"></quill-editor>
             <el-button class="editor-btn" type="primary" @click="submit">保存</el-button>
         </div>
     </div>
@@ -28,7 +28,9 @@
         name: 'editor',
         data: function(){
             return {
-                content: '',
+                form: {
+                    content: ''
+                },
                 editorOption: {
                     placeholder: '请输入内容'
                 }
@@ -44,14 +46,14 @@
             getData() {
                 let query = null;
                 fetchData({mode, query}).then(res => {
-                    this.content = res.data[0].content;
+                    this.form.content = res.data[0].content;
                 });
             },
             onEditorChange({ editor, html, text }) {
-                this.content = html;
+                this.form.content = html;
             },
             submit(){
-                editData(this.content).then(() => {
+                editData(this.form).then(() => {
                     this.$message.success(`保存成功`);
                 }).catch(() => {
                     this.$message.error(`保存失败`);

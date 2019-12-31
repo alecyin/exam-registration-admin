@@ -60,6 +60,16 @@ export default new Router({
                     meta: { title: '准考证注意事项' }
                 },
                 {
+                    path: '/exam',
+                    component: () => import(/* webpackChunkName: "exam" */ '../components/page/Exam.vue'),
+                    meta: { title: '专业考试管理' }
+                },
+                {
+                    path: '/exam-subject',
+                    component: () => import(/* webpackChunkName: "exam-subject" */ '../components/page/ExamSubject.vue'),
+                    meta: { title: '科目考试管理' }
+                },
+                {
                     path: '/table',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/BaseTable.vue'),
                     meta: { title: '基础表格' }

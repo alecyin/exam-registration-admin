@@ -7,16 +7,16 @@ export const fetchData = query => {
     });
 };
 
-export const editData = content => {
+export const editData = form => {
     return request({
         url: '/examinee-notes',
         method: 'put',
         headers:{
             'Content-Type':'application/json;'
         },
-        content,
+        form,
         transformRequest: [function() {
-            return JSON.stringify(content)
+            return JSON.stringify(form)
         }]
     });
 };
