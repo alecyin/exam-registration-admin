@@ -112,6 +112,11 @@ export default {
                     title: '科目考试管理'
                 },
                 {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'order',
+                    title: '缴费管理'
+                },
+                {
                     icon: 'el-icon-lx-copy',
                     index: 'tabs',
                     title: 'tab选项卡'

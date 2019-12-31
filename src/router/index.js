@@ -70,6 +70,11 @@ export default new Router({
                     meta: { title: '科目考试管理' }
                 },
                 {
+                    path: '/order',
+                    component: () => import(/* webpackChunkName: "order" */ '../components/page/Order.vue'),
+                    meta: { title: '缴费管理' }
+                },
+                {
                     path: '/table',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/BaseTable.vue'),
                     meta: { title: '基础表格' }

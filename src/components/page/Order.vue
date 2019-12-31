@@ -3,7 +3,7 @@
         <!-- <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 科目考试管理
+                    <i class="el-icon-lx-cascades"></i> 缴费管理
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div> -->
@@ -15,16 +15,9 @@
                     class="handle-del mr10"
                     @click="delAllSelection"
                 >批量删除</el-button>
-                <el-select v-model="query.examName" placeholder="专业考试名称" @change="selectQueryExamChange" class="mr10">
-                    <el-option key="" label="全部" value=""></el-option>
-                    <el-option v-for="item in examList" 
-                                :key="item.id" 
-                                :lable="item.id" 
-                                :value="item.name">
-                    </el-option>
-                </el-select>
+                <el-input v-model="query.keyword" placeholder="ID" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
-                <el-button type="primary" icon="el-icon-plus" @click="handleAdd">添加</el-button>
+                <!-- <el-button type="primary" icon="el-icon-plus" @click="handleAdd">添加</el-button> -->
             </div>
             <el-table
                 :data="tableData"
@@ -36,14 +29,21 @@
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center" column-key="createTime"></el-table-column>
-                <el-table-column prop="examName" label="所属专业考试"></el-table-column>
-                <el-table-column prop="majorName" label="专业名称"></el-table-column>
-                <el-table-column prop="subjectName" label="科目名称"></el-table-column>
-                <el-table-column prop="address" label="具体地址"></el-table-column>
-                <el-table-column prop="startTime" label="开始时间" :formatter="dateFormat"></el-table-column>
-                <el-table-column prop="endTime" label="结束时间" :formatter="dateFormat"></el-table-column>
+                <el-table-column prop="studentName" label="姓名"></el-table-column>
+                <el-table-column prop="idCardNumber" label="身份证号码"></el-table-column>
+                <el-table-column prop="examName" label="报名考试"></el-table-column>
+                <el-table-column prop="cost" label="需缴费"></el-table-column>
+                <el-table-column prop="examineeNumber" label="准考证号码"></el-table-column>
+                <el-table-column prop="orderNumber" label="订单号"></el-table-column>
+                <el-table-column label="是否支付" align="center">
+                    <template slot-scope="scope">
+                        <el-tag
+                            :type="scope.row.isPaid===false?'success':(scope.row.isPaid===true?'danger':'')"
+                        >{{scope.row.isPaid===false?'否':'是'}}</el-tag>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="updateTime" label="最后修改时间" :formatter="dateFormat"></el-table-column>
-                <el-table-column prop="createTime" label="注册时间" :formatter="dateFormat"></el-table-column>
+                <el-table-column prop="createTime" label="创建时间" :formatter="dateFormat"></el-table-column>
                 <el-table-column label="启用状态" align="center">
                     <template slot-scope="scope">
                         <el-tag
@@ -79,23 +79,17 @@
             </div>
         </div>
 
-        <!-- 添加弹出框 -->
-        <el-dialog :title="dialog.editMode ? '编辑' : '新增'" :visible.sync="editVisible" width="35%">
-            <el-form ref="form" :model="form" label-width="110px">
-                <el-form-item label="选择考试及科目">
-                    <el-cascader :options="examSubjects" v-model="form.examSubject" clearable></el-cascader>
+        <!-- 编辑弹出框 -->
+        <!-- <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
+            <el-form ref="form" :model="form" label-width="90px">
+                <el-form-item label="缴费名称">
+                    <el-input v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="具体地址">
+                <el-form-item label="缴费代码">
+                    <el-input v-model="form.code"></el-input>
+                </el-form-item>
+                <el-form-item label="地址">
                     <el-input v-model="form.address"></el-input>
-                </el-form-item>
-                <el-form-item label="考试时间设置">
-                    <el-date-picker
-                    v-model="form.examTime"
-                    type="datetimerange"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期">
-                    </el-date-picker>
                 </el-form-item>
                 <el-form-item label="是否关闭">
                     <template>
@@ -108,6 +102,33 @@
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveEdit">确 定</el-button>
+            </span>
+        </el-dialog> -->
+
+        <!-- 添加弹出框 -->
+        <el-dialog :title="dialog.editMode ? '编辑' : '新增'" :visible.sync="editVisible" width="30%">
+            <el-form ref="form" :model="form" label-width="90px">
+                <el-form-item label="缴费名称">
+                    <el-input v-model="form.name"></el-input>
+                </el-form-item>
+                <el-form-item label="缴费代码">
+                    <el-input v-model="form.code"></el-input>
+                </el-form-item>
+                <el-form-item label="地址">
+                    <el-input v-model="form.address"></el-input>
+                </el-form-item>
+                <el-form-item label="是否关闭">
+                    <template>
+                        <el-radio-group v-model="form.isDeleted">
+                            <el-radio :label=true>是</el-radio>
+                            <el-radio :label=false>否</el-radio>
+                        </el-radio-group>
+                    </template>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editVisible = false;">取 消</el-button>
                 <el-button type="primary" @click="saveInfo">确 定</el-button>
             </span>
         </el-dialog>
@@ -115,25 +136,23 @@
 </template>
 
 <script>
-import { fetchData,editData,delData,delAllData,addData,fetchAllEnabledData,fetchEnabledDataByCondition,getCascader } from '../../api/base';
+import { fetchData,editData,delData,delAllData,addData } from '../../api/base';
 import moment from 'moment';
-const mode = 'exam-subjects';
+const mode = 'orders';
 export default {
-    name: 'examsubjectstable',
+    name: 'ordertable',
     data() {
         return {
             query: {
-                examId: '',
+                keyword: '',
                 pageIndex: 1,
                 pageSize: 10
             },
-            examList: [],
             tableData: [],
             multipleSelection: [],
             dialog: {
                 editMode: false
             },
-            examSubjects: [],
             delList: [],
             editVisible: false,
             pageTotal: 0,
@@ -144,15 +163,8 @@ export default {
     },
     created() {
         this.getData();
-        this.selectGetData();
     },
     methods: {
-        cascaderGetData() {
-            let qMode = "exams";
-            getCascader(qMode).then(res => {
-                this.examSubjects = res.data;
-            });
-        },
         getData() {
             let query = this.query;
             fetchData({mode, query}).then(res => {
@@ -169,7 +181,6 @@ export default {
         handleAdd() {
             this.form = { isDeleted:false };
             this.editVisible = true;
-            this.cascaderGetData();
             this.dialog.editMode = false;
         },
         // 删除操作
@@ -220,37 +231,15 @@ export default {
             this.dialog.editMode = true;
             this.idx = index;
             this.form = Object.assign({}, row);
-            this.form.examTime = [this.form.startTime, this.form.endTime];
-            this.cascaderGetData();
-            this.form.examSubject = [this.form.examId, this.form.subjectId];
             this.editVisible = true;
-        },
-        selectGetData() {
-            fetchAllEnabledData("exams").then(res => {
-                this.examList = JSON.parse(JSON.stringify(res.data).slice(1, -1));
-            }).catch(error => {
-               this.$message.error(`获取考点信息失败，稍后再试`);
-            });
-        },
-        selectQueryExamChange(e) {
-            this.query.examId = '';
-            let obj = {};
-            obj = this.examList.find((item)=>{
-                return item.name === e;//筛选出匹配数据
-            });
-            this.query.examId = obj.id;
         },
         // 保存编辑
         saveEdit() {
             this.editVisible = false;
             let form = this.form;
-            form.startTime = form.examTime[0];
-            form.endTime = form.examTime[1];
-            form.examId = form.examSubject[0];
-            form.subjectId = form.examSubject[1];
             editData({mode, form}).then(() => {
-                this.$message.success(`修改 ID 为 ${this.form.id} 的科目考试信息成功`);
-                this.getData();
+                this.$message.success(`修改 ID 为 ${this.form.id} 的缴费信息成功`);
+                this.$set(this.tableData, this.idx, this.form);
             }).catch(() => {
                this.$message.error(`保存失败`);
             });
@@ -259,12 +248,8 @@ export default {
         saveAdd() {
             this.editVisible = false;
             let form = this.form;
-            form.startTime = form.examTime[0];
-            form.endTime = form.examTime[1];
-            form.examId = form.examSubject[0];
-            form.subjectId = form.examSubject[1];
             addData({mode, form}).then(() => {
-                this.$message.success(`添加科目考试信息成功`);
+                this.$message.success(`添加缴费信息成功`);
                 this.getData();
             }).catch(() => {
                this.$message.error(`保存失败`);
