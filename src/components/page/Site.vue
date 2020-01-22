@@ -6,7 +6,7 @@
                     <i class="el-icon-lx-cascades"></i> 考点管理
                 </el-breadcrumb-item>
             </el-breadcrumb>
-        </div> -->
+        </div>-->
         <div class="container">
             <div class="handle-box">
                 <el-button
@@ -15,7 +15,11 @@
                     class="handle-del mr10"
                     @click="delAllSelection"
                 >批量删除</el-button>
-                <el-input v-model="query.keyword" placeholder="ID/考点名称/代码" class="handle-input mr10"></el-input>
+                <el-input
+                    v-model="query.keyword"
+                    placeholder="ID/考点名称/代码"
+                    class="handle-input mr10"
+                ></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
                 <el-button type="primary" icon="el-icon-plus" @click="handleAdd">添加</el-button>
             </div>
@@ -28,10 +32,17 @@
                 @selection-change="handleSelectionChange"
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" width="55" align="center" column-key="createTime"></el-table-column>
+                <el-table-column
+                    prop="id"
+                    label="ID"
+                    width="55"
+                    align="center"
+                    column-key="createTime"
+                ></el-table-column>
                 <el-table-column prop="name" label="考点名称"></el-table-column>
                 <el-table-column prop="code" label="考点代码"></el-table-column>
                 <el-table-column prop="address" label="地址"></el-table-column>
+                <el-table-column prop="allowProvince" label="允许报考的省份" width="300"></el-table-column>
                 <el-table-column prop="updateTime" label="最后修改时间" :formatter="dateFormat"></el-table-column>
                 <el-table-column prop="createTime" label="创建时间" :formatter="dateFormat"></el-table-column>
                 <el-table-column label="启用状态" align="center">
@@ -94,11 +105,11 @@
                 <el-button @click="editVisible = false">取 消</el-button>
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
             </span>
-        </el-dialog> -->
+        </el-dialog>-->
 
         <!-- 添加弹出框 -->
-        <el-dialog :title="dialog.editMode ? '编辑' : '新增'" :visible.sync="editVisible" width="30%">
-            <el-form ref="form" :model="form" label-width="90px">
+        <el-dialog :title="dialog.editMode ? '编辑' : '新增'" :visible.sync="editVisible" width="50%">
+            <el-form ref="form" :model="form" label-width="110px">
                 <el-form-item label="考点名称">
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
@@ -108,11 +119,22 @@
                 <el-form-item label="地址">
                     <el-input v-model="form.address"></el-input>
                 </el-form-item>
+                <el-form-item label="允许报考的省份">
+                    <el-checkbox
+                        :indeterminate="isIndeterminate"
+                        v-model="checkAll"
+                        @change="handleCheckAllChange"
+                    >全选</el-checkbox>
+                    <div style="margin: 15px 0;"></div>
+                    <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
+                        <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
+                    </el-checkbox-group>
+                </el-form-item>
                 <el-form-item label="是否关闭">
                     <template>
                         <el-radio-group v-model="form.isDeleted">
-                            <el-radio :label=true>是</el-radio>
-                            <el-radio :label=false>否</el-radio>
+                            <el-radio :label="true">是</el-radio>
+                            <el-radio :label="false">否</el-radio>
                         </el-radio-group>
                     </template>
                 </el-form-item>
@@ -126,9 +148,45 @@
 </template>
 
 <script>
-import { fetchData,editData,delData,delAllData,addData } from '../../api/base';
+import { fetchData, editData, delData, delAllData, addData } from '../../api/base';
 import moment from 'moment';
 const mode = 'sites';
+const cityOptions = [
+    '北京市',
+    '天津市',
+    '上海市',
+    '重庆市',
+    '河北省',
+    '山西省',
+    '辽宁省',
+    '吉林省',
+    '黑龙江省',
+    '江苏省',
+    '浙江省',
+    '安徽省',
+    '福建省',
+    '江西省',
+    '山东省',
+    '河南省',
+    '湖北省',
+    '湖南省',
+    '广东省',
+    '海南省',
+    '四川省',
+    '贵州省',
+    '云南省',
+    '陕西省',
+    '甘肃省',
+    '青海省',
+    '台湾省',
+    '内蒙古自治区',
+    '广西壮族自治区',
+    '西藏自治区',
+    '宁夏回族自治区',
+    '新疆维吾尔自治区',
+    '香港特别行政区',
+    '澳门特别行政区'
+];
 export default {
     name: 'sitetable',
     data() {
@@ -148,7 +206,11 @@ export default {
             pageTotal: 0,
             form: {},
             idx: -1,
-            id: -1
+            id: -1,
+            checkAll: false,
+            checkedCities: [],
+            cities: cityOptions,
+            isIndeterminate: true
         };
     },
     created() {
@@ -157,7 +219,7 @@ export default {
     methods: {
         getData() {
             let query = this.query;
-            fetchData({mode, query}).then(res => {
+            fetchData({ mode, query }).then(res => {
                 this.tableData = res.data;
                 this.pageTotal = res.pageTotal;
             });
@@ -169,7 +231,8 @@ export default {
         },
         // 触发添加按钮
         handleAdd() {
-            this.form = { isDeleted:false };
+            this.form = { isDeleted: false };
+            this.checkedCities = [];
             this.editVisible = true;
             this.dialog.editMode = false;
         },
@@ -179,16 +242,18 @@ export default {
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             })
-            .then(() => {
-                let id = row.id;
-                delData({mode, id}).then(() => {
-                this.$message.success('删除成功');
-                this.tableData.splice(index, 1);
-                }).catch(() => {
-                this.$message.error(`删除失败`);
-                });
-            })
-            .catch(() => {});
+                .then(() => {
+                    let id = row.id;
+                    delData({ mode, id })
+                        .then(() => {
+                            this.$message.success('删除成功');
+                            this.tableData.splice(index, 1);
+                        })
+                        .catch(() => {
+                            this.$message.error(`删除失败`);
+                        });
+                })
+                .catch(() => {});
         },
         // 多选操作
         handleSelectionChange(val) {
@@ -199,51 +264,63 @@ export default {
             let str = '';
             this.delList = this.delList.concat(this.multipleSelection);
             for (let i = 0; i < length; i++) {
-                str += this.multipleSelection[i].id
+                str += this.multipleSelection[i].id;
                 if (i != length - 1) {
                     str += ',';
                 }
             }
-            delAllData({mode, str}).then(() => {
-                this.$message.success('删除成功');
-                 this.getData();
-            }).catch(error => {
-                console.log(error);
-                this.$message.error(`删除失败`);
-            });
+            delAllData({ mode, str })
+                .then(() => {
+                    this.$message.success('删除成功');
+                    this.getData();
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.$message.error(`删除失败`);
+                });
             this.multipleSelection = [];
         },
         saveInfo() {
-          this.dialog.editMode ? this.saveEdit() : this.saveAdd();  
+            this.dialog.editMode ? this.saveEdit() : this.saveAdd();
         },
         // 编辑操作
         handleEdit(index, row) {
             this.dialog.editMode = true;
             this.idx = index;
+            this.checkedCities = [];
             this.form = Object.assign({}, row);
+            if (this.form.allowProvince !== undefined) {
+                this.checkedCities = this.form.allowProvince.split('，');
+            }
             this.editVisible = true;
         },
         // 保存编辑
         saveEdit() {
             this.editVisible = false;
+            this.form.allowProvince = this.checkedCities.join("，");
             let form = this.form;
-            editData({mode, form}).then(() => {
-                this.$message.success(`修改 ID 为 ${this.form.id} 的考点信息成功`);
-                this.$set(this.tableData, this.idx, this.form);
-            }).catch(() => {
-               this.$message.error(`保存失败`);
-            });
+            editData({ mode, form })
+                .then(() => {
+                    this.$message.success(`修改 ID 为 ${this.form.id} 的考点信息成功`);
+                    this.$set(this.tableData, this.idx, this.form);
+                })
+                .catch(() => {
+                    this.$message.error(`保存失败`);
+                });
         },
         // 保存添加的信息
         saveAdd() {
             this.editVisible = false;
+            this.form.allowProvince = this.checkedCities.join("，");
             let form = this.form;
-            addData({mode, form}).then(() => {
-                this.$message.success(`添加考点信息成功`);
-                this.getData();
-            }).catch(() => {
-               this.$message.error(`保存失败`);
-            });
+            addData({ mode, form })
+                .then(() => {
+                    this.$message.success(`添加考点信息成功`);
+                    this.getData();
+                })
+                .catch(() => {
+                    this.$message.error(`保存失败`);
+                });
         },
         // 分页导航
         handlePageChange(val) {
@@ -253,10 +330,19 @@ export default {
         dateFormat(row, column) {
             var date = row[column.property];
             if (date == undefined) {
-                return "";
+                return '';
             }
-           return moment(date).format("YYYY-MM-DD HH:mm:ss");
-       }
+            return moment(date).format('YYYY-MM-DD HH:mm:ss');
+        },
+        handleCheckAllChange(val) {
+            this.checkedCities = val ? cityOptions : [];
+            this.isIndeterminate = false;
+        },
+        handleCheckedCitiesChange(value) {
+            let checkedCount = value.length;
+            this.checkAll = checkedCount === this.cities.length;
+            this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
+        }
     }
 };
 </script>
