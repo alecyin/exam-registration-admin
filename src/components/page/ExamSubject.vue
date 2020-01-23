@@ -15,8 +15,7 @@
                     class="handle-del mr10"
                     @click="delAllSelection"
                 >批量删除</el-button>
-                <el-select v-model="query.examName" placeholder="专业考试名称" @change="selectQueryExamChange" class="mr10">
-                    <el-option key="" label="全部" value=""></el-option>
+                <el-select v-model="query.examName" placeholder="专业考试名称" @change="selectQueryExamChange" clearable class="mr10">
                     <el-option v-for="item in examList" 
                                 :key="item.id" 
                                 :lable="item.id" 

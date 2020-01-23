@@ -15,16 +15,14 @@
                     class="handle-del mr10"
                     @click="delAllSelection"
                 >批量删除</el-button>
-                <el-select v-model="query.majorName" placeholder="专业" @change="selectQueryMajorChange" class="mr10">
-                    <el-option key="" label="全部" value=""></el-option>
+                <el-select v-model="query.majorName" placeholder="专业" @change="selectQueryMajorChange" clearable  class="mr10">
                     <el-option v-for="item in majorList" 
                                 :key="item.id" 
                                 :lable="item.id" 
                                 :value="item.name">
                     </el-option>
                 </el-select>
-                <el-select v-model="query.siteName" placeholder="考点" @change="selectQuerySiteChange" class="mr10">
-                    <el-option key="" label="全部" value=""></el-option>
+                <el-select v-model="query.siteName" placeholder="考点" @change="selectQuerySiteChange" clearable  class="mr10">
                     <el-option v-for="item in siteList" 
                                 :key="item.id" 
                                 :lable="item.id" 
@@ -97,7 +95,7 @@
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
                 <el-form-item label="专业名称">
-                    <el-select v-model="form.majorName" placeholder="请选择专业考试" @change="selectMajorChange">
+                    <el-select v-model="form.majorName" placeholder="请选择专业考试" @change="selectMajorChange" clearable>
                         <el-option v-for="item in majorList" 
                                     :key="item.id" 
                                     :lable="item.id" 
@@ -106,7 +104,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="考点名称">
-                    <el-select v-model="form.siteName" placeholder="请选择考试考点位置" @change="selectSiteChange">
+                    <el-select v-model="form.siteName" placeholder="请选择考试考点位置" @change="selectSiteChange" clearable>
                         <el-option v-for="item in siteList" 
                                     :key="item.id" 
                                     :lable="item.id" 
