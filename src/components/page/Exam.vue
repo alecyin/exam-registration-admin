@@ -48,7 +48,6 @@
                 <el-table-column prop="siteName" label="考点名称"></el-table-column>
                 <el-table-column prop="startExamineeNumber" label="起始考号"></el-table-column>
                 <el-table-column prop="currentExamineeNumber" label="当前考号"></el-table-column>
-                <el-table-column prop="province" label="允许报考的省份"></el-table-column>
                 <el-table-column prop="startTime" label="开始时间" :formatter="dateFormat"></el-table-column>
                 <el-table-column prop="endTime" label="结束时间" :formatter="dateFormat"></el-table-column>
                 <el-table-column prop="updateTime" label="最后修改时间" :formatter="dateFormat"></el-table-column>
@@ -117,9 +116,6 @@
                 </el-form-item>
                 <el-form-item label="当前考号">
                     <el-input v-model="form.currentExamineeNumber"></el-input>
-                </el-form-item>
-                <el-form-item label="允许报考的省份">
-                    <el-input v-model="form.province"></el-input>
                 </el-form-item>
                 <el-form-item label="考试时间设置">
                     <el-date-picker
