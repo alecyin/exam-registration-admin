@@ -3,9 +3,10 @@ module.exports = {
     assetsDir: 'static',
     productionSourceMap: false,
     devServer: {
+        port: 88,
         proxy: {
             '/':{
-                target:'http://127.0.0.1',
+                target:'http://47.105.93.192/api',
                 changeOrigin:true
                 // pathRewrite:{
                 //     '/':''
