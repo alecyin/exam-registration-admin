@@ -4,7 +4,7 @@ import auth from '../auth/auth';
 const service = axios.create({
     // process.env.NODE_ENV === 'development' 来判断是否开发环境
     // easy-mock服务挂了，暂时不使用了
-    baseURL: 'http://127.0.0.1/api',
+    baseURL: 'http://47.105.93.192/api',
     timeout: 5000
 });
 

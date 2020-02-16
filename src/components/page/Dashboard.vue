@@ -4,7 +4,7 @@
             <el-col :span="8">
                 <el-card shadow="hover" class="mgb20" style="height:252px;">
                     <div class="user-info">
-                        <img src="../../assets/img/img.jpg" class="user-avator" alt />
+                        <strong>用户名：</strong>
                         <div class="user-info-cont">
                             <div class="user-info-name">{{name}}</div>
                             <div>{{role}}</div>
@@ -16,17 +16,18 @@
                     </div>
                     <div class="user-info-list">
                         上次登录地点：
-                        <span>东莞</span>
+                        <span>哈尔滨</span>
                     </div>
                 </el-card>
-                <el-card shadow="hover" style="height:252px;">
+                <el-card shadow="hover" style="height:300px;">
                     <div slot="header" class="clearfix">
-                        <span>语言详情</span>
-                    </div>Vue
-                    <el-progress :percentage="71.3" color="#42b983"></el-progress>JavaScript
-                    <el-progress :percentage="24.1" color="#f1e05a"></el-progress>CSS
-                    <el-progress :percentage="13.7"></el-progress>HTML
-                    <el-progress :percentage="5.9" color="#f56c6c"></el-progress>
+                        <span>报考前五详情</span>
+                    </div>音乐表演（管弦乐器演奏）
+                    <el-progress :percentage="20.3" color="#42b983"></el-progress>绘画
+                    <el-progress :percentage="18.1" color="#f1e05a"></el-progress>播音与主持艺术
+                    <el-progress :percentage="13.7"></el-progress>演唱
+                    <el-progress :percentage="5.9" color="#f56c6c"></el-progress>中国画
+                    <el-progress :percentage="4.9" color="#f56c6c"></el-progress>
                 </el-card>
             </el-col>
             <el-col :span="16">
@@ -36,8 +37,8 @@
                             <div class="grid-content grid-con-1">
                                 <i class="el-icon-lx-people grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">1234</div>
-                                    <div>用户访问量</div>
+                                    <div class="grid-num">2036</div>
+                                    <div>学生数量</div>
                                 </div>
                             </div>
                         </el-card>
@@ -47,8 +48,8 @@
                             <div class="grid-content grid-con-2">
                                 <i class="el-icon-lx-notice grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">321</div>
-                                    <div>系统消息</div>
+                                    <div class="grid-num">10</div>
+                                    <div>公告数量</div>
                                 </div>
                             </div>
                         </el-card>
@@ -56,45 +57,21 @@
                     <el-col :span="8">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
                             <div class="grid-content grid-con-3">
-                                <i class="el-icon-lx-goods grid-con-icon"></i>
+                                <i class="el-icon-lx-roundcheckfill grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">5000</div>
-                                    <div>数量</div>
+                                    <div class="grid-num">1035</div>
+                                    <div>完成报名数量</div>
                                 </div>
                             </div>
                         </el-card>
                     </el-col>
                 </el-row>
-                <el-card shadow="hover" style="height:403px;">
-                    <div slot="header" class="clearfix">
-                        <span>待办事项</span>
-                        <el-button style="float: right; padding: 3px 0" type="text">添加</el-button>
-                    </div>
-                    <el-table :show-header="false" :data="todoList" style="width:100%;">
-                        <el-table-column width="40">
-                            <template slot-scope="scope">
-                                <el-checkbox v-model="scope.row.status"></el-checkbox>
-                            </template>
-                        </el-table-column>
-                        <el-table-column>
-                            <template slot-scope="scope">
-                                <div
-                                    class="todo-item"
-                                    :class="{'todo-item-del': scope.row.status}"
-                                >{{scope.row.title}}</div>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="60">
-                            <template>
-                                <i class="el-icon-edit"></i>
-                                <i class="el-icon-delete"></i>
-                            </template>
-                        </el-table-column>
-                    </el-table>
+                <el-card shadow="hover" style="height:451px;">
+                    <schart ref="pie" class="schart" canvasId="pie" :options="options"></schart>
                 </el-card>
             </el-col>
         </el-row>
-        <el-row :gutter="20">
+        <!-- <el-row :gutter="20">
             <el-col :span="12">
                 <el-card shadow="hover">
                     <schart ref="bar" class="schart" canvasId="bar" :options="options"></schart>
@@ -105,7 +82,7 @@
                     <schart ref="line" class="schart" canvasId="line" :options="options2"></schart>
                 </el-card>
             </el-col>
-        </el-row>
+        </el-row>-->
     </div>
 </template>
 
@@ -174,27 +151,22 @@ export default {
                 }
             ],
             options: {
-                type: 'bar',
+                type: 'pie',
                 title: {
-                    text: '最近一周各品类销售图'
+                    text: '考点报名人数饼状图'
                 },
-                xRorate: 25,
-                labels: ['周一', '周二', '周三', '周四', '周五'],
+                legend: {
+                    position: 'left'
+                },
+                bgColor: '#fff',
+                labels: ['江苏省常州市', '河南省郑州市', '湖南省长沙市', '江西省赣州市', '河北省唐山市', '西安市未央区'],
                 datasets: [
                     {
-                        label: '家电',
-                        data: [234, 278, 270, 190, 230]
-                    },
-                    {
-                        label: '百货',
-                        data: [164, 178, 190, 135, 160]
-                    },
-                    {
-                        label: '食品',
-                        data: [144, 198, 150, 235, 120]
+                        data: [334, 278, 190, 235, 260, 200]
                     }
                 ]
             },
+
             options2: {
                 type: 'line',
                 title: {
@@ -223,7 +195,7 @@ export default {
     },
     computed: {
         role() {
-            return this.name === 'admin' ? '超级管理员' : '普通用户';
+            return '超级管理员';
         }
     },
     // created() {

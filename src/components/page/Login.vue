@@ -33,7 +33,7 @@ export default {
     data: function() {
         return {
             param: {
-                username: 'tools',
+                username: 'fireman',
                 password: '123456',
             },
             rules: {
