@@ -44,8 +44,13 @@
                         >{{scope.row.isDeleted===false?'正常':'关闭'}}</el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="150" align="center">
+                <el-table-column label="操作" width="200" align="center">
                     <template slot-scope="scope">
+                        <el-button
+                            type="text"
+                            icon="el-icon-unlock"
+                            @click="handleReset(scope.$index, scope.row)"
+                        >重置密码</el-button>
                         <el-button
                             type="text"
                             icon="el-icon-edit"
@@ -106,6 +111,7 @@
 
 <script>
 import { fetchData,editData,delData,delAllData } from '../../api/base';
+import { resetPass } from '../../api/student';
 import moment from 'moment';
 const mode = 'students';
 export default {
@@ -156,6 +162,19 @@ export default {
                 this.tableData.splice(index, 1);
                 }).catch(() => {
                 this.$message.error(`删除失败`);
+                });
+            })
+            .catch(() => {});
+        },
+        // 重置操作
+        handleReset(index, row) {
+            // 二次确认
+            this.$confirm('确定要重置成123456吗？', '提示', {
+                type: 'warning'
+            })
+            .then(() => {
+                resetPass(row).then(res => {
+                    this.$message.success(`重置成功`);
                 });
             })
             .catch(() => {});

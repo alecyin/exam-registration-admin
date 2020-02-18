@@ -18,5 +18,19 @@ export const getUserPic = idCardNumberInfo => {
         transformRequest: [function() {
             return JSON.stringify(idCardNumberInfo)
         }]
+    }); 
+};
+
+export const updatePass = form => {
+    return request({
+        url: '/admins/update-pass',
+        method: 'post',
+        headers:{
+            'Content-Type':'application/json;'
+        },
+        form,
+        transformRequest: [function() {
+            return JSON.stringify(form)
+        }]
     });
 };

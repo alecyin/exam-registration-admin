@@ -28,7 +28,7 @@ export default{
                 context.$message.success(error);
             });
         }).catch(error => {
-            context.$message.error('登录失败，检查用户名和密码是否正确');
+           
         });
     },
     getAuthHeader(){

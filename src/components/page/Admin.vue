@@ -43,9 +43,9 @@
                     <template slot-scope="scope">
                         <el-button
                             type="text"
-                            icon="el-icon-edit"
-                            @click="handleEdit(scope.$index, scope.row)"
-                        >编辑</el-button>
+                            icon="el-icon-unlock"
+                            @click="handleReset(scope.$index, scope.row)"
+                        >重置密码</el-button>
                         <el-button
                             type="text"
                             icon="el-icon-delete"
@@ -100,9 +100,6 @@
                 <el-form-item label="管理员名称">
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="密码">
-                    <el-input v-model="form.password"></el-input>
-                </el-form-item>
                 <el-form-item label="是否关闭">
                     <template>
                         <el-radio-group v-model="form.isDeleted">
@@ -122,6 +119,7 @@
 
 <script>
 import { fetchData,editData,delData,delAllData,addData } from '../../api/base';
+import { resetPass } from '../../api/admin';
 import moment from 'moment';
 const mode = 'admins';
 export default {
@@ -185,6 +183,19 @@ export default {
             })
             .catch(() => {});
         },
+        // 重置操作
+        handleReset(index, row) {
+            // 二次确认
+            this.$confirm('确定要重置成123456吗？', '提示', {
+                type: 'warning'
+            })
+            .then(() => {
+                resetPass(row).then(res => {
+                    this.$message.success(`重置成功`);
+                });
+            })
+            .catch(() => {});
+        },
         // 多选操作
         handleSelectionChange(val) {
             this.multipleSelection = val;
@@ -201,7 +212,7 @@ export default {
             }
             delAllData({mode, str}).then(() => {
                 this.$message.success('删除成功');
-                 this.getData();
+                this.getData();
             }).catch(error => {
                 console.log(error);
                 this.$message.error(`删除失败`);
