@@ -6,7 +6,7 @@
                     <i class="el-icon-lx-cascades"></i> 学生管理
                 </el-breadcrumb-item>
             </el-breadcrumb>
-        </div> -->
+        </div>-->
         <div class="container">
             <div class="handle-box">
                 <el-button
@@ -15,7 +15,11 @@
                     class="handle-del mr10"
                     @click="delAllSelection"
                 >批量删除</el-button>
-                <el-input v-model="query.keyword" placeholder="ID/姓名/身份证号码" class="handle-input mr10"></el-input>
+                <el-input
+                    v-model="query.keyword"
+                    placeholder="ID/姓名/身份证号码"
+                    class="handle-input mr10"
+                ></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
             </div>
             <el-table
@@ -28,20 +32,33 @@
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-                <el-table-column prop="name" label="姓名"></el-table-column>
-                <el-table-column prop="idCardNumber" label="身份证号码"></el-table-column>
-                <el-table-column prop="sex" label="性别"></el-table-column>
+                <el-table-column prop="name" label="姓名" align="center"></el-table-column>
+                <el-table-column prop="idCardNumber" label="身份证号码" align="left"></el-table-column>
+                <el-table-column prop="sex" label="性别" width="55" align="center"></el-table-column>
                 <el-table-column prop="phone" label="手机号码"></el-table-column>
                 <el-table-column prop="address" label="地址"></el-table-column>
-                <el-table-column prop="school" label="学校"></el-table-column>
-                <el-table-column prop="email" label="邮箱"></el-table-column>
+                <el-table-column prop="school" label="学校" align="center"></el-table-column>
+                <el-table-column prop="email" label="邮箱" align="center"></el-table-column>
+                <el-table-column label="照片查看" width="100" align="left">
+                    <template slot-scope="scope">
+                        <el-link @click="handLook(scope.$index, scope.row, 1)" target="_blank">
+                            身份证正面
+                        </el-link><br/>
+                        <el-link @click="handLook(scope.$index, scope.row, 2)" target="_blank">
+                            证件照
+                        </el-link><br/>
+                        <el-link @click="handLook(scope.$index, scope.row, 3)" target="_blank">
+                            省准考证
+                        </el-link>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="loginTime" label="最后登录时间" :formatter="dateFormat"></el-table-column>
                 <el-table-column prop="createTime" label="注册时间" :formatter="dateFormat"></el-table-column>
                 <el-table-column label="启用状态" align="center">
                     <template slot-scope="scope">
                         <el-tag
-                            :type="scope.row.isDeleted===false?'success':(scope.row.state===true?'danger':'')"
-                        >{{scope.row.isDeleted===false?'正常':'关闭'}}</el-tag>
+                            :type="scope.row.isDeleted?'danger':'success'"
+                        >{{scope.row.isDeleted?'关闭':'正常'}}</el-tag>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="200" align="center">
@@ -95,8 +112,8 @@
                 <el-form-item label="是否关闭">
                     <template>
                         <el-radio-group v-model="form.isDeleted">
-                            <el-radio :label=true>是</el-radio>
-                            <el-radio :label=false>否</el-radio>
+                            <el-radio :label="true">是</el-radio>
+                            <el-radio :label="false">否</el-radio>
                         </el-radio-group>
                     </template>
                 </el-form-item>
@@ -110,7 +127,7 @@
 </template>
 
 <script>
-import { fetchData,editData,delData,delAllData } from '../../api/base';
+import { fetchData, editData, delData, delAllData } from '../../api/base';
 import { resetPass } from '../../api/student';
 import moment from 'moment';
 const mode = 'students';
@@ -130,7 +147,9 @@ export default {
             pageTotal: 0,
             form: {},
             idx: -1,
-            id: -1
+            id: -1,
+            suffix: '.jpg',
+            prefix: 'http://47.105.93.192/api/photo/'
         };
     },
     created() {
@@ -139,7 +158,7 @@ export default {
     methods: {
         getData() {
             let query = this.query;
-            fetchData({mode, query}).then(res => {
+            fetchData({ mode, query }).then(res => {
                 this.tableData = res.data;
                 this.pageTotal = res.pageTotal;
             });
@@ -155,16 +174,18 @@ export default {
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             })
-            .then(() => {
-                let id = row.id;
-                delData({mode, id}).then(() => {
-                this.$message.success('删除成功');
-                this.tableData.splice(index, 1);
-                }).catch(() => {
-                this.$message.error(`删除失败`);
-                });
-            })
-            .catch(() => {});
+                .then(() => {
+                    let id = row.id;
+                    delData({ mode, id })
+                        .then(() => {
+                            this.$message.success('删除成功');
+                            this.tableData.splice(index, 1);
+                        })
+                        .catch(() => {
+                            this.$message.error(`删除失败`);
+                        });
+                })
+                .catch(() => {});
         },
         // 重置操作
         handleReset(index, row) {
@@ -172,12 +193,12 @@ export default {
             this.$confirm('确定要重置成123456吗？', '提示', {
                 type: 'warning'
             })
-            .then(() => {
-                resetPass(row).then(res => {
-                    this.$message.success(`重置成功`);
-                });
-            })
-            .catch(() => {});
+                .then(() => {
+                    resetPass(row).then(res => {
+                        this.$message.success(`重置成功`);
+                    });
+                })
+                .catch(() => {});
         },
         // 多选操作
         handleSelectionChange(val) {
@@ -188,18 +209,20 @@ export default {
             let str = '';
             this.delList = this.delList.concat(this.multipleSelection);
             for (let i = 0; i < length; i++) {
-                str += this.multipleSelection[i].id
+                str += this.multipleSelection[i].id;
                 if (i != length - 1) {
                     str += ',';
                 }
             }
-            delAllData({mode, str}).then(() => {
-                this.$message.success('删除成功');
-                 this.getData();
-            }).catch(error => {
-                console.log(error);
-                this.$message.error(`删除失败`);
-            });
+            delAllData({ mode, str })
+                .then(() => {
+                    this.$message.success('删除成功');
+                    this.getData();
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.$message.error(`删除失败`);
+                });
             this.multipleSelection = [];
         },
         // 编辑操作
@@ -212,12 +235,14 @@ export default {
         saveEdit() {
             this.editVisible = false;
             let form = this.form;
-            editData({mode, form}).then(() => {
-                this.$message.success(`修改 ID 为 ${this.form.id} 的学生信息成功`);
-                this.$set(this.tableData, this.idx, this.form);
-            }).catch(() => {
-               this.$message.error(`保存失败`);
-            });
+            editData({ mode, form })
+                .then(() => {
+                    this.$message.success(`修改 ID 为 ${this.form.id} 的学生信息成功`);
+                    this.$set(this.tableData, this.idx, this.form);
+                })
+                .catch(() => {
+                    this.$message.error(`保存失败`);
+                });
         },
         // 分页导航
         handlePageChange(val) {
@@ -227,10 +252,32 @@ export default {
         dateFormat(row, column) {
             var date = row[column.property];
             if (date == undefined) {
-                return "";
+                return '';
             }
-           return moment(date).format("YYYY-MM-DD HH:mm:ss");
-       }
+            return moment(date).format('YYYY-MM-DD HH:mm:ss');
+        },
+        handLook(index, row, type) {
+            console.log(type);
+            if (type === 1) {
+                if (row.idCardPic === undefined) {
+                    this.$message.error(`考生还未上传此图片`);
+                } else {
+                    window.open(this.prefix + row.idCardPic + this.suffix, '_blank');
+                }
+            } else if (type === 2) {
+                if (row.profilePic === undefined) {
+                    this.$message.error(`考生还未上传此图片`);
+                } else {
+                    window.open(this.prefix + row.profilePic + this.suffix, '_blank');
+                }
+            } else if (type === 3) {
+                if (row.provincialExamineePic === undefined) {
+                    this.$message.error(`考生还未上传此图片`);
+                } else {
+                    window.open(this.prefix + row.provincialExamineePic + this.suffix, '_blank');
+                }
+            }
+        }
     }
 };
 </script>
