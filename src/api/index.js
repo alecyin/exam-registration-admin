@@ -1,9 +1,26 @@
 import request from '../utils/request';
 
-export const fetchData = query => {
+export const getCount = () => {
     return request({
-        url: './table.json',
-        method: 'get',
-        params: query
+        url: '/index/count',
+        method: 'get'
     });
 };
+
+export const getSite = () => {
+    return request({
+        url: '/index/site',
+        method: 'get'
+    });
+};
+
+export const getPercent = () => {
+    return request({
+        url: '/index/percent',
+        method: 'get'
+    });
+};
+
+
+
+

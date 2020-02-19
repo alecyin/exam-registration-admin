@@ -22,12 +22,12 @@
                 <el-card shadow="hover" style="height:300px;">
                     <div slot="header" class="clearfix">
                         <span>报考前五详情</span>
-                    </div>音乐表演（管弦乐器演奏）
-                    <el-progress :percentage="20.3" color="#42b983"></el-progress>绘画
-                    <el-progress :percentage="18.1" color="#f1e05a"></el-progress>播音与主持艺术
-                    <el-progress :percentage="13.7"></el-progress>演唱
-                    <el-progress :percentage="5.9" color="#f56c6c"></el-progress>中国画
-                    <el-progress :percentage="4.9" color="#f56c6c"></el-progress>
+                    </div>{{percent.firstName}}
+                    <el-progress :percentage=percent.first color="#42b983"></el-progress>{{percent.secondName}}
+                    <el-progress :percentage=percent.second color="#f1e05a"></el-progress>{{percent.thirdName}}
+                    <el-progress :percentage=percent.third></el-progress>{{percent.fourthName}}
+                    <el-progress :percentage=percent.fourth color="#f56c6c"></el-progress>{{percent.fifthName}}
+                    <el-progress :percentage=percent.fifth color="#f56c6c"></el-progress>
                 </el-card>
             </el-col>
             <el-col :span="16">
@@ -37,7 +37,7 @@
                             <div class="grid-content grid-con-1">
                                 <i class="el-icon-lx-people grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">2036</div>
+                                    <div class="grid-num">{{count.studentNumber}}</div>
                                     <div>学生数量</div>
                                 </div>
                             </div>
@@ -48,7 +48,7 @@
                             <div class="grid-content grid-con-2">
                                 <i class="el-icon-lx-notice grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">10</div>
+                                    <div class="grid-num">{{count.announcementNumber}}</div>
                                     <div>公告数量</div>
                                 </div>
                             </div>
@@ -59,7 +59,7 @@
                             <div class="grid-content grid-con-3">
                                 <i class="el-icon-lx-roundcheckfill grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">1035</div>
+                                    <div class="grid-num">{{count.paidNumber}}</div>
                                     <div>完成报名数量</div>
                                 </div>
                             </div>
@@ -89,67 +89,17 @@
 <script>
 import Schart from 'vue-schart';
 import bus from '../common/bus';
+import { getCount,getSite,getPercent } from '../../api/index';
 export default {
     name: 'dashboard',
     data() {
         return {
             name: localStorage.getItem('ms_username'),
-            todoList: [
-                {
-                    title: '今天要修复100个bug',
-                    status: false
-                },
-                {
-                    title: '今天要修复100个bug',
-                    status: false
-                },
-                {
-                    title: '今天要写100行代码加几个bug吧',
-                    status: false
-                },
-                {
-                    title: '今天要修复100个bug',
-                    status: false
-                },
-                {
-                    title: '今天要修复100个bug',
-                    status: true
-                },
-                {
-                    title: '今天要写100行代码加几个bug吧',
-                    status: true
-                }
-            ],
-            data: [
-                {
-                    name: '2018/09/04',
-                    value: 1083
-                },
-                {
-                    name: '2018/09/05',
-                    value: 941
-                },
-                {
-                    name: '2018/09/06',
-                    value: 1139
-                },
-                {
-                    name: '2018/09/07',
-                    value: 816
-                },
-                {
-                    name: '2018/09/08',
-                    value: 327
-                },
-                {
-                    name: '2018/09/09',
-                    value: 228
-                },
-                {
-                    name: '2018/09/10',
-                    value: 1065
-                }
-            ],
+            count: {
+                studentNumber: 0,
+                announcementNumber: 0,
+                paidNumber: 0
+            },
             options: {
                 type: 'pie',
                 title: {
@@ -166,27 +116,8 @@ export default {
                     }
                 ]
             },
-
-            options2: {
-                type: 'line',
-                title: {
-                    text: '最近几个月各品类销售趋势图'
-                },
-                labels: ['6月', '7月', '8月', '9月', '10月'],
-                datasets: [
-                    {
-                        label: '家电',
-                        data: [234, 278, 270, 190, 230]
-                    },
-                    {
-                        label: '百货',
-                        data: [164, 178, 150, 135, 160]
-                    },
-                    {
-                        label: '食品',
-                        data: [74, 118, 200, 235, 90]
-                    }
-                ]
+            percent: {
+                
             }
         };
     },
@@ -198,23 +129,37 @@ export default {
             return '超级管理员';
         }
     },
-    // created() {
-    //     this.handleListener();
-    //     this.changeDate();
-    // },
-    // activated() {
-    //     this.handleListener();
-    // },
-    // deactivated() {
-    //     window.removeEventListener('resize', this.renderChart);
-    //     bus.$off('collapse', this.handleBus);
-    // },
+    created() {
+        this.getData();
+    },
     methods: {
         changeDate() {
             const now = new Date().getTime();
             this.data.forEach((item, index) => {
                 const date = new Date(now - (6 - index) * 86400000);
                 item.name = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+            });
+        },
+        getData(){
+            getCount().then(res => {
+                this.count = res.data[0];
+            });
+            getSite().then(res => {
+                this.options.labels = res.data[0][0];
+                this.options.datasets[0].data = res.data[0][1];
+            });
+            getPercent().then(res => {
+                this.percent.firstName = res.data[0][0][0];
+                this.percent.first = res.data[0][0][1]; 
+                this.percent.secondName = res.data[0][1][0]; 
+                this.percent.second = res.data[0][1][1]; 
+                this.percent.thirdName = res.data[0][2][0];
+                this.percent.third = res.data[0][2][1]; 
+                this.percent.fourthName = res.data[0][3][0];
+                this.percent.fourth = res.data[0][3][1]; 
+                this.percent.fifthName = res.data[0][4][0];
+                this.percent.fifth = res.data[0][4][1];
+                this.$forceUpdate;
             });
         }
         // handleListener() {
