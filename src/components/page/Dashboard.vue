@@ -117,7 +117,7 @@ export default {
                 ]
             },
             percent: {
-                
+                firstName:''
             }
         };
     },
@@ -159,7 +159,6 @@ export default {
                 this.percent.fourth = res.data[0][3][1]; 
                 this.percent.fifthName = res.data[0][4][0];
                 this.percent.fifth = res.data[0][4][1];
-                this.$forceUpdate;
             });
         }
         // handleListener() {
