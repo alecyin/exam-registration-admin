@@ -100,11 +100,21 @@
                 <el-form-item label="姓名">
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="身份证号码">
+                <el-form-item label="性别">
+                    <el-radio v-model="form.sex" label="男">男</el-radio>
+                    <el-radio v-model="form.sex" label="女">女</el-radio>
+                </el-form-item>
+                <el-form-item label="身份证号码" prop="idCardNumber">
                     <el-input v-model="form.idCardNumber"></el-input>
                 </el-form-item>
-                <el-form-item label="地址">
+                <el-form-item label="手机号码" prop="phone">
+                    <el-input v-model="form.phone"></el-input>
+                </el-form-item>
+                <el-form-item label="地址" prop="address">
                     <el-input v-model="form.address"></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱" prop="email">
+                    <el-input v-model="form.email"></el-input>
                 </el-form-item>
                 <el-form-item label="学校">
                     <el-input v-model="form.school"></el-input>

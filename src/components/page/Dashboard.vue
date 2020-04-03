@@ -10,14 +10,14 @@
                             <div>{{role}}</div>
                         </div>
                     </div>
-                    <div class="user-info-list">
+                    <!-- <div class="user-info-list">
                         上次登录时间：
                         <span>2019-11-01</span>
-                    </div>
-                    <div class="user-info-list">
+                    </div> -->
+                    <!-- <div class="user-info-list">
                         上次登录地点：
                         <span>哈尔滨</span>
-                    </div>
+                    </div> -->
                 </el-card>
                 <el-card shadow="hover" style="height:300px;">
                     <div slot="header" class="clearfix">

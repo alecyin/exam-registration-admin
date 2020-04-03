@@ -40,19 +40,19 @@
                     column-key="createTime"
                 ></el-table-column>
                 <el-table-column prop="name" label="考点名称"></el-table-column>
-                <el-table-column prop="code" label="考点代码"></el-table-column>
-                <el-table-column prop="address" label="地址"></el-table-column>
-                <el-table-column prop="allowProvince" label="允许报考的省份" width="300"></el-table-column>
-                <el-table-column prop="updateTime" label="最后修改时间" :formatter="dateFormat"></el-table-column>
-                <el-table-column prop="createTime" label="创建时间" :formatter="dateFormat"></el-table-column>
-                <el-table-column label="启用状态" align="center">
+                <el-table-column prop="code" label="考点代码" align="center" width="80"></el-table-column>
+                <el-table-column prop="address" label="地址" align="center"></el-table-column>
+                <el-table-column prop="allowProvince" label="允许报考的省份" width="300" align="center"></el-table-column>
+                <el-table-column prop="updateTime" label="最后修改时间" :formatter="dateFormat" align="center"></el-table-column>
+                <el-table-column prop="createTime" label="创建时间" :formatter="dateFormat" align="center"></el-table-column>
+                <el-table-column label="启用状态" align="center" width="80">
                     <template slot-scope="scope">
                         <el-tag
                             :type="scope.row.isDeleted===false?'success':(scope.row.state===true?'danger':'')"
                         >{{scope.row.isDeleted===false?'正常':'关闭'}}</el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="150" align="center">
+                <el-table-column label="操作" width="140" align="center">
                     <template slot-scope="scope">
                         <el-button
                             type="text"

@@ -29,13 +29,13 @@
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center" column-key="createTime"></el-table-column>
-                <el-table-column prop="name" label="科目名称"></el-table-column>
-                <el-table-column prop="code" label="科目代码"></el-table-column>
-                <el-table-column prop="type" label="考试形式"></el-table-column>
-                 <el-table-column prop="majorName" label="所属专业"></el-table-column>
-                <el-table-column prop="updateTime" label="最后修改时间" :formatter="dateFormat"></el-table-column>
-                <el-table-column prop="createTime" label="创建时间" :formatter="dateFormat"></el-table-column>
-                <el-table-column label="启用状态" align="center">
+                <el-table-column prop="name" label="科目名称" align="center"></el-table-column>
+                <el-table-column prop="code" label="科目代码" align="center" width="80"></el-table-column>
+                <el-table-column prop="type" label="考试形式" align="center" width="80"></el-table-column>
+                 <el-table-column prop="majorName" label="所属专业" align="center"></el-table-column>
+                <el-table-column prop="updateTime" label="最后修改时间" :formatter="dateFormat" align="center"></el-table-column>
+                <el-table-column prop="createTime" label="创建时间" :formatter="dateFormat" align="center"></el-table-column>
+                <el-table-column label="启用状态" align="center" width="80">
                     <template slot-scope="scope">
                         <el-tag
                             :type="scope.row.isDeleted===false?'success':(scope.row.isDeleted===true?'danger':'')"

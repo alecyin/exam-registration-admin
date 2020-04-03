@@ -100,6 +100,9 @@
                 <el-form-item label="管理员名称">
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
+                <el-form-item label="管理员密码">
+                    <el-input v-model="form.password"></el-input>
+                </el-form-item>
                 <el-form-item label="是否关闭">
                     <template>
                         <el-radio-group v-model="form.isDeleted">

@@ -42,7 +42,7 @@
                 <el-table-column prop="startTime" label="开始时间" :formatter="dateFormat"></el-table-column>
                 <el-table-column prop="endTime" label="结束时间" :formatter="dateFormat"></el-table-column>
                 <el-table-column prop="updateTime" label="最后修改时间" :formatter="dateFormat"></el-table-column>
-                <el-table-column prop="createTime" label="注册时间" :formatter="dateFormat"></el-table-column>
+                <el-table-column prop="createTime" label="创建时间" :formatter="dateFormat"></el-table-column>
                 <el-table-column label="启用状态" align="center">
                     <template slot-scope="scope">
                         <el-tag
