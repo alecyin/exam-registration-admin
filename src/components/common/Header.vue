@@ -48,18 +48,18 @@
             </div>
         </div>
                 <el-dialog title="修改密码" :visible.sync="editVisible" width="30%">
-            <el-form ref="form" :model="form" label-width="90px">
-                <el-form-item label="原密码">
+            <el-form ref="form" :model="form" label-width="90px" :rules="rules">
+                <el-form-item label="原密码"  prop="oldPass">
                     <el-input :type="passw1" v-model="form.oldPass">
                         <i slot="suffix" :class="icon1" @click="showPass1"></i>
                     </el-input>
                 </el-form-item>
-                <el-form-item label="新密码">
+                <el-form-item label="新密码"  prop="newPass">
                     <el-input :type="passw2" v-model="form.newPass">
                         <i slot="suffix" :class="icon2" @click="showPass2"></i>
                     </el-input>
                 </el-form-item>
-                <el-form-item label="确认密码">
+                <el-form-item label="确认密码" prop="confirmPass">
                     <el-input :type="passw3" v-model="form.confirmPass">
                         <i slot="suffix" :class="icon3" @click="showPass3"></i>
                     </el-input>
@@ -90,7 +90,57 @@ export default {
             icon2: 'el-input__icon el-icon-view',
             icon3: 'el-input__icon el-icon-view',
             form: {},
-            editVisible: false
+            editVisible: false,
+            rules: {
+                oldPass: [
+                    {
+                        required: true,
+                        message: '请输入密码',
+                        trigger: 'blur'
+                    },
+                    {
+                        min: 6,
+                        max: 30,
+                        message: '长度在 6 到 30 个字符'
+                    },
+                    {
+                        pattern: /^(\w){6,20}$/,
+                        message: '只能输入6-20个字母、数字、下划线'
+                    }
+                ],
+                newPass: [
+                    {
+                        required: true,
+                        message: '请输入密码',
+                        trigger: 'blur'
+                    },
+                    {
+                        min: 6,
+                        max: 30,
+                        message: '长度在 6 到 30 个字符'
+                    },
+                    {
+                        pattern: /^(\w){6,20}$/,
+                        message: '只能输入6-20个字母、数字、下划线'
+                    }
+                ],
+                confirmPass: [
+                    {
+                        required: true,
+                        message: '请输入密码',
+                        trigger: 'blur'
+                    },
+                    {
+                        min: 6,
+                        max: 30,
+                        message: '长度在 6 到 30 个字符'
+                    },
+                    {
+                        pattern: /^(\w){6,20}$/,
+                        message: '只能输入6-20个字母、数字、下划线'
+                    }
+                ]
+            }
         };
     },
     computed: {
