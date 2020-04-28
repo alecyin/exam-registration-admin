@@ -26,7 +26,9 @@
             <el-table
                 :data="tableData"
                 border
+                style="width: 1600px"
                 class="table"
+                height="500"
                 ref="multipleTable"
                 header-cell-class-name="table-header"
                 @selection-change="handleSelectionChange"
@@ -39,20 +41,20 @@
                     align="center"
                     column-key="createTime"
                 ></el-table-column>
-                <el-table-column prop="name" label="考点名称"></el-table-column>
+                <el-table-column prop="name" label="考点名称" width="150" header-align="center"></el-table-column>
                 <el-table-column prop="code" label="考点代码" align="center" width="80"></el-table-column>
-                <el-table-column prop="address" label="地址" align="center"></el-table-column>
-                <el-table-column prop="allowProvince" label="允许报考的省份" width="300" align="center"></el-table-column>
-                <el-table-column prop="updateTime" label="最后修改时间" :formatter="dateFormat" align="center"></el-table-column>
-                <el-table-column prop="createTime" label="创建时间" :formatter="dateFormat" align="center"></el-table-column>
-                <el-table-column label="启用状态" align="center" width="80">
+                <el-table-column prop="address" label="地址" show-overflow-tooltip width="200" header-align="center"></el-table-column>
+                <el-table-column prop="allowProvince" show-overflow-tooltip label="允许报考的省份" width="200" header-align="center"></el-table-column>
+                <el-table-column prop="updateTime" label="最后修改时间" :formatter="dateFormat" width="160" align="center"></el-table-column>
+                <el-table-column prop="createTime" label="创建时间" :formatter="dateFormat" width="160" align="center"></el-table-column>
+                <el-table-column label="启用状态" header-align="center" width="80">
                     <template slot-scope="scope">
                         <el-tag
                             :type="scope.row.isDeleted===false?'success':(scope.row.state===true?'danger':'')"
                         >{{scope.row.isDeleted===false?'正常':'关闭'}}</el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="140" align="center">
+                <el-table-column fixed="right" label="操作" width="140" header-align="center">
                     <template slot-scope="scope">
                         <el-button
                             type="text"
@@ -346,7 +348,12 @@ export default {
     }
 };
 </script>
-
+<style>
+.el-tooltip__popper {
+  max-width: 30%;
+  line-height: 30px;
+}
+</style>
 <style scoped>
 .handle-box {
     margin-bottom: 20px;

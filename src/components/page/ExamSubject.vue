@@ -35,14 +35,14 @@
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center" column-key="createTime"></el-table-column>
-                <el-table-column prop="examName" label="所属专业考试"></el-table-column>
-                <el-table-column prop="majorName" label="专业名称"></el-table-column>
-                <el-table-column prop="subjectName" label="科目名称"></el-table-column>
-                <el-table-column prop="address" label="具体地址"></el-table-column>
-                <el-table-column prop="startTime" label="开始时间" :formatter="dateFormat"></el-table-column>
-                <el-table-column prop="endTime" label="结束时间" :formatter="dateFormat"></el-table-column>
-                <el-table-column prop="updateTime" label="最后修改时间" :formatter="dateFormat"></el-table-column>
-                <el-table-column prop="createTime" label="创建时间" :formatter="dateFormat"></el-table-column>
+                <el-table-column prop="examName" width="120" header-align="center" label="所属专业考试"></el-table-column>
+                <el-table-column prop="majorName" show-overflow-tooltip width="120" label="专业名称"></el-table-column>
+                <el-table-column prop="subjectName" width="120" show-overflow-tooltip label="科目名称"></el-table-column>
+                <el-table-column prop="address" width="200" show-overflow-tooltip label="具体地址"></el-table-column>
+                <el-table-column prop="startTime" label="开始时间" align="center" width="160" :formatter="dateFormat"></el-table-column>
+                <el-table-column prop="endTime" label="结束时间" align="center" width="160" :formatter="dateFormat"></el-table-column>
+                <el-table-column prop="updateTime" label="最后修改时间" align="center" width="160" :formatter="dateFormat"></el-table-column>
+                <el-table-column prop="createTime" label="创建时间" align="center" width="160" :formatter="dateFormat"></el-table-column>
                 <el-table-column label="启用状态" align="center">
                     <template slot-scope="scope">
                         <el-tag
@@ -50,7 +50,7 @@
                         >{{scope.row.isDeleted===false?'正常':'关闭'}}</el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="150" align="center">
+                <el-table-column label="操作" fixed="right" width="150" align="center">
                     <template slot-scope="scope">
                         <el-button
                             type="text"

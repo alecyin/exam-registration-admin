@@ -43,15 +43,15 @@
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center" column-key="createTime"></el-table-column>
-                <el-table-column prop="name" label="名称" align="center"></el-table-column>
-                <el-table-column prop="majorName" label="专业名称" align="center"></el-table-column>
-                <el-table-column prop="siteName" label="考点名称" align="center"></el-table-column>
-                <el-table-column prop="startExamineeNumber" label="起始考号" align="center"></el-table-column>
-                <el-table-column prop="currentExamineeNumber" label="当前考号" align="center"></el-table-column>
-                <el-table-column prop="startTime" label="开始时间" :formatter="dateFormat" align="center"></el-table-column>
-                <el-table-column prop="endTime" label="结束时间" :formatter="dateFormat" align="center"></el-table-column>
-                <el-table-column prop="updateTime" label="最后修改时间" :formatter="dateFormat" align="center"></el-table-column>
-                <el-table-column prop="createTime" label="创建时间" :formatter="dateFormat" align="center"></el-table-column>
+                <el-table-column prop="name" label="名称" header-align="center"></el-table-column>
+                <el-table-column prop="majorName" label="专业名称" width="150" header-align="center"></el-table-column>
+                <el-table-column prop="siteName"  label="考点名称" show-overflow-tooltip  width="150" header-align="center"></el-table-column>
+                <el-table-column prop="startExamineeNumber" label="起始考号" header-align="center"></el-table-column>
+                <el-table-column prop="currentExamineeNumber" label="当前考号" header-align="center"></el-table-column>
+                <el-table-column prop="startTime" label="开始时间" :formatter="dateFormat" align="center" width="160"></el-table-column>
+                <el-table-column prop="endTime" label="结束时间" :formatter="dateFormat" align="center" width="160"></el-table-column>
+                <el-table-column prop="updateTime" label="最后修改时间" :formatter="dateFormat" align="center" width="160"></el-table-column>
+                <el-table-column prop="createTime" label="创建时间" :formatter="dateFormat" align="center" width="160"></el-table-column>
                 <el-table-column label="启用状态" align="center">
                     <template slot-scope="scope">
                         <el-tag
@@ -59,7 +59,7 @@
                         >{{scope.row.isDeleted===false?'正常':'关闭'}}</el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="150" align="center">
+                <el-table-column label="操作" fixed="right" width="150" align="center">
                     <template slot-scope="scope">
                         <el-button
                             type="text"

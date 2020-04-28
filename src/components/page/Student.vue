@@ -25,21 +25,23 @@
             <el-table
                 :data="tableData"
                 border
+                style="width: 1600px"
                 class="table"
+                height="500"
                 ref="multipleTable"
                 header-cell-class-name="table-header"
                 @selection-change="handleSelectionChange"
             >
-                <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-                <el-table-column prop="name" label="姓名" align="center"></el-table-column>
-                <el-table-column prop="idCardNumber" label="身份证号码" align="left"></el-table-column>
-                <el-table-column prop="sex" label="性别" width="55" align="center"></el-table-column>
-                <el-table-column prop="phone" label="手机号码"></el-table-column>
-                <el-table-column prop="address" label="地址"></el-table-column>
-                <el-table-column prop="school" label="学校" align="center"></el-table-column>
-                <el-table-column prop="email" label="邮箱" align="center"></el-table-column>
-                <el-table-column label="照片查看" width="100" align="left">
+                <el-table-column type="selection" width="55" align="center" header-align="center"></el-table-column>
+                <el-table-column prop="id" label="ID" align="center" width="55" header-align="center"></el-table-column>
+                <el-table-column prop="name" label="姓名" header-align="center"></el-table-column>
+                <el-table-column prop="idCardNumber" label="身份证号码" header-align="center" width="170" align="left"></el-table-column>
+                <el-table-column prop="sex" label="性别" align="center" width="55" header-align="center"></el-table-column>
+                <el-table-column prop="phone" label="手机号码" width="110"></el-table-column>
+                <el-table-column prop="address" show-overflow-tooltip label="地址" header-align="center" width="200"></el-table-column>
+                <el-table-column prop="school" show-overflow-tooltip label="学校" width="200" header-align="center"></el-table-column>
+                <el-table-column prop="email" width="160" label="邮箱" header-align="center"></el-table-column>
+                <el-table-column label="照片查看" header-align="center" width="100" align="left">
                     <template slot-scope="scope">
                         <el-link @click="handLook(scope.$index, scope.row, 1)" target="_blank">
                             身份证正面
@@ -52,16 +54,16 @@
                         </el-link>
                     </template>
                 </el-table-column>
-                <el-table-column prop="loginTime" label="最后登录时间" :formatter="dateFormat"></el-table-column>
-                <el-table-column prop="createTime" label="注册时间" :formatter="dateFormat"></el-table-column>
-                <el-table-column label="启用状态" align="center">
+                <el-table-column prop="loginTime" label="最后登录时间" align="center" width="160" :formatter="dateFormat"></el-table-column>
+                <el-table-column prop="createTime" label="注册时间" align="center" width="160" :formatter="dateFormat"></el-table-column>
+                <el-table-column label="启用状态" header-align="center" align="center">
                     <template slot-scope="scope">
                         <el-tag
                             :type="scope.row.isDeleted?'danger':'success'"
                         >{{scope.row.isDeleted?'关闭':'正常'}}</el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="200" align="center">
+                <el-table-column fixed="right" label="操作" width="200" header-align="center">
                     <template slot-scope="scope">
                         <el-button
                             type="text"

@@ -27,7 +27,7 @@
                 header-cell-class-name="table-header"
                 @selection-change="handleSelectionChange"
             >
-                <el-table-column type="selection" width="55" align="center"></el-table-column>
+                <el-table-column type="selection" align="center" width="55"></el-table-column>
                 <el-table-column type="expand">
                     <template slot-scope="props">
                         <el-form label-position="left" inline>
@@ -35,18 +35,18 @@
                         </el-form>
                     </template>
                 </el-table-column>
-                <el-table-column prop="id" label="ID" width="55" align="center" column-key="createTime"></el-table-column>
-                <el-table-column prop="title" label="标题"></el-table-column>
-                <el-table-column prop="updateTime" label="最后修改时间" :formatter="dateFormat"></el-table-column>
-                <el-table-column prop="createTime" label="发布时间" :formatter="dateFormat"></el-table-column>
-                <el-table-column label="启用状态" align="center">
+                <el-table-column prop="id" label="ID" width="55" align="center" header-header-align="center" column-key="createTime"></el-table-column>
+                <el-table-column prop="title" show-overflow-tooltip label="标题"  header-align="center"></el-table-column>
+                <el-table-column prop="updateTime"  align="center" width="160" label="最后修改时间" :formatter="dateFormat"></el-table-column>
+                <el-table-column prop="createTime" align="center" width="160" label="发布时间" :formatter="dateFormat"></el-table-column>
+                <el-table-column label="启用状态"  align="center" width="150" header-align="center">
                     <template slot-scope="scope">
                         <el-tag
                             :type="scope.row.isDeleted===false?'success':(scope.row.state===true?'danger':'')"
                         >{{scope.row.isDeleted===false?'正常':'关闭'}}</el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="150" align="center">
+                <el-table-column label="操作" width="150" align="center" header-align="center">
                     <template slot-scope="scope">
                         <el-button
                             type="text"

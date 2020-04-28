@@ -15,7 +15,7 @@
                     class="handle-del mr10"
                     @click="delAllSelection"
                 >批量删除</el-button>
-                <el-input v-model="query.keyword" placeholder="ID/身份证号码/姓名" class="handle-input mr10"></el-input>
+                <el-input v-model="query.keyword" placeholder="身份证号码" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
                 <!-- <el-button type="primary" icon="el-icon-plus" @click="handleAdd">添加</el-button> -->
             </div>
@@ -29,12 +29,12 @@
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center" column-key="createTime"></el-table-column>
-                <el-table-column prop="studentName" label="姓名" align="center"  width="80"></el-table-column>
-                <el-table-column prop="idCardNumber" label="身份证号码" width="164" align="center"></el-table-column>
-                <el-table-column prop="examName" label="报名考试" align="center"></el-table-column>
+                <el-table-column prop="studentName" label="姓名" header-align="center"  width="80"></el-table-column>
+                <el-table-column prop="idCardNumber" label="身份证号码" width="164" header-align="center"></el-table-column>
+                <el-table-column prop="examName" label="报名考试" header-align="center"></el-table-column>
                 <el-table-column prop="cost" label="需缴费/元" align="center"  width="95"></el-table-column>
-                <el-table-column prop="examineeNumber" label="准考证号码" align="center"></el-table-column>
-                <el-table-column prop="orderNumber" label="订单号" align="center" width="190"></el-table-column>
+                <el-table-column prop="examineeNumber" label="准考证号码" width="120" align="center"></el-table-column>
+                <el-table-column prop="orderNumber" label="订单号" header-align="center" width="190"></el-table-column>
                 <el-table-column label="已支付" align="center" width="70">
                     <template slot-scope="scope">
                         <el-tag
@@ -43,15 +43,15 @@
                     </template>
                 </el-table-column>
                 <!-- <el-table-column prop="updateTime" label="最后修改时间" :formatter="dateFormat"></el-table-column> -->
-                <el-table-column prop="createTime" label="创建时间" :formatter="dateFormat"></el-table-column>
-                <!-- <el-table-column label="启用状态" align="center">
+                <el-table-column prop="createTime" label="创建时间" align="center" :formatter="dateFormat"></el-table-column>
+                <!-- <el-table-column label="启用状态" header-align="center">
                     <template slot-scope="scope">
                         <el-tag
                             :type="scope.row.isDeleted===false?'success':(scope.row.state===true?'danger':'')"
                         >{{scope.row.isDeleted===false?'正常':'关闭'}}</el-tag>
                     </template>
                 </el-table-column> -->
-                <!-- <el-table-column label="操作" width="150" align="center">
+                <!-- <el-table-column label="操作" width="150" header-align="center">
                     <template slot-scope="scope">
                         <el-button
                             type="text"

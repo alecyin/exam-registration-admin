@@ -27,11 +27,11 @@
                 header-cell-class-name="table-header"
                 @selection-change="handleSelectionChange"
             >
-                <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" width="55" align="center" column-key="createTime"></el-table-column>
-                <el-table-column prop="name" label="管理员名称"></el-table-column>
-                <el-table-column prop="updateTime" label="最后修改时间" :formatter="dateFormat"></el-table-column>
-                <el-table-column prop="createTime" label="创建时间" :formatter="dateFormat"></el-table-column>
+                <el-table-column type="selection" align="center" width="55" header-align="center"></el-table-column>
+                <el-table-column prop="id" label="ID" width="55" align="center" header-align="center" column-key="createTime"></el-table-column>
+                <el-table-column prop="name" label="管理员名称" header-align="center"></el-table-column>
+                <el-table-column prop="updateTime" label="最后修改时间" align="center" :formatter="dateFormat"></el-table-column>
+                <el-table-column prop="createTime" label="创建时间" align="center" :formatter="dateFormat"></el-table-column>
                 <el-table-column label="启用状态" align="center">
                     <template slot-scope="scope">
                         <el-tag
