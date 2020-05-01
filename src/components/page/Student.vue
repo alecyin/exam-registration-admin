@@ -139,7 +139,7 @@
                     <el-table-column prop="address" label="地址"></el-table-column>
                     <el-table-column prop="school" label="学校"></el-table-column>
                     <el-table-column prop="email" label="邮箱"></el-table-column>
-                    <el-table-column prop="loginTime" label="最后登录时间"></el-table-column>
+                    <el-table-column prop="loginTime" label="最后登录时间" :formatter="dateFormat"></el-table-column>
                     <el-table-column prop="createTime" label="注册时间" :formatter="dateFormat"></el-table-column>
                     <el-table-column label="启用状态">
                         <template slot-scope="scope">
