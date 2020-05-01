@@ -85,7 +85,7 @@
                 <el-table-column label="已支付">
                     <template slot-scope="scope">
                         <el-tag
-                            :type="scope.row.isPaid===false?'success':(scope.row.isPaid===true?'danger':'')"
+                            :type="scope.row.isPaid===false?'danger':(scope.row.isPaid===true?'success':'')"
                         >{{scope.row.isPaid===false?'否':'是'}}</el-tag>
                     </template>
                 </el-table-column>
