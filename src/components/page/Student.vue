@@ -21,6 +21,13 @@
                     class="handle-input mr10"
                 ></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
+                <el-button
+                    type="primary"
+                    icon="el-icon-download"
+                    class="handle-del mr10"
+                    @click="exportExcel"
+                    :disabled="outButton"
+                >导出</el-button>
             </div>
             <el-table
                 :data="tableData"
@@ -33,29 +40,67 @@
                 @selection-change="handleSelectionChange"
             >
                 <el-table-column type="selection" width="55" align="center" header-align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" align="center" width="55" header-align="center"></el-table-column>
+                <el-table-column
+                    prop="id"
+                    label="ID"
+                    align="center"
+                    width="55"
+                    header-align="center"
+                ></el-table-column>
                 <el-table-column prop="name" label="姓名" header-align="center"></el-table-column>
-                <el-table-column prop="idCardNumber" label="身份证号码" header-align="center" width="170" align="left"></el-table-column>
-                <el-table-column prop="sex" label="性别" align="center" width="55" header-align="center"></el-table-column>
+                <el-table-column
+                    prop="idCardNumber"
+                    label="身份证号码"
+                    header-align="center"
+                    width="170"
+                    align="left"
+                ></el-table-column>
+                <el-table-column
+                    prop="sex"
+                    label="性别"
+                    align="center"
+                    width="55"
+                    header-align="center"
+                ></el-table-column>
                 <el-table-column prop="phone" label="手机号码" width="110"></el-table-column>
-                <el-table-column prop="address" show-overflow-tooltip label="地址" header-align="center" width="200"></el-table-column>
-                <el-table-column prop="school" show-overflow-tooltip label="学校" width="200" header-align="center"></el-table-column>
+                <el-table-column
+                    prop="address"
+                    show-overflow-tooltip
+                    label="地址"
+                    header-align="center"
+                    width="200"
+                ></el-table-column>
+                <el-table-column
+                    prop="school"
+                    show-overflow-tooltip
+                    label="学校"
+                    width="200"
+                    header-align="center"
+                ></el-table-column>
                 <el-table-column prop="email" width="160" label="邮箱" header-align="center"></el-table-column>
                 <el-table-column label="照片查看" header-align="center" width="100" align="left">
                     <template slot-scope="scope">
-                        <el-link @click="handLook(scope.$index, scope.row, 1)" target="_blank">
-                            身份证正面
-                        </el-link><br/>
-                        <el-link @click="handLook(scope.$index, scope.row, 2)" target="_blank">
-                            证件照
-                        </el-link><br/>
-                        <el-link @click="handLook(scope.$index, scope.row, 3)" target="_blank">
-                            省准考证
-                        </el-link>
+                        <el-link @click="handLook(scope.$index, scope.row, 1)" target="_blank">身份证正面</el-link>
+                        <br />
+                        <el-link @click="handLook(scope.$index, scope.row, 2)" target="_blank">证件照</el-link>
+                        <br />
+                        <el-link @click="handLook(scope.$index, scope.row, 3)" target="_blank">省准考证</el-link>
                     </template>
                 </el-table-column>
-                <el-table-column prop="loginTime" label="最后登录时间" align="center" width="160" :formatter="dateFormat"></el-table-column>
-                <el-table-column prop="createTime" label="注册时间" align="center" width="160" :formatter="dateFormat"></el-table-column>
+                <el-table-column
+                    prop="loginTime"
+                    label="最后登录时间"
+                    align="center"
+                    width="160"
+                    :formatter="dateFormat"
+                ></el-table-column>
+                <el-table-column
+                    prop="createTime"
+                    label="注册时间"
+                    align="center"
+                    width="160"
+                    :formatter="dateFormat"
+                ></el-table-column>
                 <el-table-column label="启用状态" header-align="center" align="center">
                     <template slot-scope="scope">
                         <el-tag
@@ -84,6 +129,27 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <div style="display:none">
+                <el-table :data="tableOutData" id="studentTable">
+                    <el-table-column prop="id" label="ID"></el-table-column>
+                    <el-table-column prop="name" label="姓名"></el-table-column>
+                    <el-table-column prop="idCardNumber" label="身份证号码"></el-table-column>
+                    <el-table-column prop="sex" label="性别"></el-table-column>
+                    <el-table-column prop="phone" label="手机号码"></el-table-column>
+                    <el-table-column prop="address" label="地址"></el-table-column>
+                    <el-table-column prop="school" label="学校"></el-table-column>
+                    <el-table-column prop="email" label="邮箱"></el-table-column>
+                    <el-table-column prop="loginTime" label="最后登录时间"></el-table-column>
+                    <el-table-column prop="createTime" label="注册时间" :formatter="dateFormat"></el-table-column>
+                    <el-table-column label="启用状态">
+                        <template slot-scope="scope">
+                            <el-tag
+                                :type="scope.row.isDeleted?'danger':'success'"
+                            >{{scope.row.isDeleted?'关闭':'正常'}}</el-tag>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
             <div class="pagination">
                 <el-pagination
                     background
@@ -142,9 +208,11 @@
 import { fetchData, editData, delData, delAllData } from '../../api/base';
 import { resetPass } from '../../api/student';
 import moment from 'moment';
+import FileSaver from 'file-saver';
+import XLSX from 'xlsx';
 const mode = 'students';
 export default {
-    name: 'sitetable',
+    name: 'studentstable',
     data() {
         return {
             query: {
@@ -152,7 +220,9 @@ export default {
                 pageIndex: 1,
                 pageSize: 10
             },
+            outButton: true,
             tableData: [],
+            tableOutData: [],
             multipleSelection: [],
             delList: [],
             editVisible: false,
@@ -174,10 +244,21 @@ export default {
                 this.tableData = res.data;
                 this.pageTotal = res.pageTotal;
             });
+            let keyword = this.query.keyword;
+            query = {
+                keyword: keyword,
+                pageIndex: 1,
+                pageSize: 99999
+            };
+            fetchData({ mode, query }).then(res => {
+                this.tableOutData = res.data;
+                this.outButton = false;
+            });
         },
         // 触发搜索按钮
         handleSearch() {
             this.$set(this.query, 'pageIndex', 1);
+            this.outButton = true;
             this.getData();
         },
         // 删除操作
@@ -289,6 +370,21 @@ export default {
                     window.open(this.prefix + row.provincialExamineePic + this.suffix, '_blank');
                 }
             }
+        },
+        exportExcel() {
+            var xlsxParam = { raw: true };
+            var wb = XLSX.utils.table_to_book(document.querySelector('#studentTable'), xlsxParam);
+            var wbout = XLSX.write(wb, {
+                bookType: 'xlsx',
+                bookSST: true,
+                type: 'array'
+            });
+            try {
+                FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), '学生.xlsx');
+            } catch (e) {
+                if (typeof console !== 'undefined') console.log(e, wbout);
+            }
+            return wbout;
         }
     }
 };

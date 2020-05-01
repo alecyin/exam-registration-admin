@@ -17,7 +17,13 @@
                 >批量删除</el-button>
                 <el-input v-model="query.keyword" placeholder="身份证号码" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
-                <!-- <el-button type="primary" icon="el-icon-plus" @click="handleAdd">添加</el-button> -->
+                <el-button
+                    type="primary"
+                    icon="el-icon-download"
+                    class="handle-del mr10"
+                    @click="exportExcel"
+                    :disabled="outButton"
+                >导出</el-button>
             </div>
             <el-table
                 :data="tableData"
@@ -67,6 +73,25 @@
                     </template>
                 </el-table-column> -->
             </el-table>
+            <div style="display:none">
+             <el-table :data="tableOutData" id="orderTable">
+                <el-table-column prop="id" label="ID"></el-table-column>
+                <el-table-column prop="studentName" label="姓名"></el-table-column>
+                <el-table-column prop="idCardNumber" label="身份证号码"></el-table-column>
+                <el-table-column prop="examName" label="报名考试"></el-table-column>
+                <el-table-column prop="cost" label="需缴费/元"></el-table-column>
+                <el-table-column prop="examineeNumber" label="准考证号码"></el-table-column>
+                <el-table-column prop="orderNumber" label="订单号"></el-table-column>
+                <el-table-column label="已支付">
+                    <template slot-scope="scope">
+                        <el-tag
+                            :type="scope.row.isPaid===false?'success':(scope.row.isPaid===true?'danger':'')"
+                        >{{scope.row.isPaid===false?'否':'是'}}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="createTime" label="创建时间" align="center" :formatter="dateFormat"></el-table-column>
+            </el-table>
+            </div>
             <div class="pagination">
                 <el-pagination
                     background
@@ -138,6 +163,8 @@
 <script>
 import { fetchData,editData,delData,delAllData,addData } from '../../api/base';
 import moment from 'moment';
+import FileSaver from 'file-saver';
+import XLSX from 'xlsx';
 const mode = 'orders';
 export default {
     name: 'ordertable',
@@ -148,7 +175,9 @@ export default {
                 pageIndex: 1,
                 pageSize: 10
             },
+            outButton: true,
             tableData: [],
+            tableOutData: [],
             multipleSelection: [],
             dialog: {
                 editMode: false
@@ -171,10 +200,21 @@ export default {
                 this.tableData = res.data;
                 this.pageTotal = res.pageTotal;
             });
+            let keyword = this.query.keyword;
+            query = {
+                keyword: keyword,
+                pageIndex: 1,
+                pageSize: 99999
+            };
+            fetchData({ mode, query }).then(res => {
+                this.tableOutData = res.data;
+                this.outButton = false;
+            });
         },
         // 触发搜索按钮
         handleSearch() {
             this.$set(this.query, 'pageIndex', 1);
+            this.outButton = true;
             this.getData();
         },
         // 触发添加按钮
@@ -266,7 +306,22 @@ export default {
                 return "";
             }
            return moment(date).format("YYYY-MM-DD HH:mm:ss");
-       }
+       },
+       exportExcel() {
+            var xlsxParam = { raw: true };
+            var wb = XLSX.utils.table_to_book(document.querySelector('#orderTable'), xlsxParam);
+            var wbout = XLSX.write(wb, {
+                bookType: 'xlsx',
+                bookSST: true,
+                type: 'array'
+            });
+            try {
+                FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), '订单.xlsx');
+            } catch (e) {
+                if (typeof console !== 'undefined') console.log(e, wbout);
+            }
+            return wbout;
+        }
     }
 };
 </script>
